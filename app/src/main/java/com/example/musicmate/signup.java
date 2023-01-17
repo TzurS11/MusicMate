@@ -28,7 +28,6 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
     Button signupBtn;
     ActionBar actionBar;
     FirebaseAuth firebaseAuth;
-    FirebaseUser currentUser;
 
 
     @Override
@@ -60,7 +59,7 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
                 if (s.length() > 0) textInEditText[0] = true;
 
 
-                if (textInEditText[0] == true && textInEditText[1] == true) {
+                if (textInEditText[0] && textInEditText[1]) {
                     setButtonEnabled(signupBtn, true);
                 } else {
                     setButtonEnabled(signupBtn, false);
@@ -79,11 +78,11 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 0) textInEditText[1] = false;
-                if (s.length() > 0) textInEditText[1] = true;
+                if (s.length() < 8) textInEditText[1] = false;
+                if (s.length() >= 8) textInEditText[1] = true;
 
 
-                if (textInEditText[0] == true && textInEditText[1] == true) {
+                if (textInEditText[0] && textInEditText[1] ) {
                     setButtonEnabled(signupBtn, true);
                 } else {
                     setButtonEnabled(signupBtn, false);
@@ -116,7 +115,7 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         Log.d("TAG", "createUserWithEmail:success");
-                        Toast.makeText(signup.this, "Successfully registered", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(signup.this, "Successfully registered uid: "+task.getResult().getUser().getUid(), Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(signup.this,MainActivity.class);
                         startActivity(intent);
                         finish();
