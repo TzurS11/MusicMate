@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.text.HtmlCompat;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -29,8 +30,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         setContentView(R.layout.activity_main);
-
-
 
         actionBar = getSupportActionBar();
 

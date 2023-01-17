@@ -99,9 +99,11 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
         if (enable == false) {
             btn.setClickable(false);
             btn.setAlpha(0.5f);
+            btn.setEnabled(false);
         } else {
             btn.setClickable(true);
             btn.setAlpha(1f);
+            btn.setEnabled(true);
         }
     }
 
