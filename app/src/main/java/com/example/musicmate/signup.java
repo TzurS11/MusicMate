@@ -1,22 +1,34 @@
 package com.example.musicmate;
 
 import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
-public class signup extends AppCompatActivity {
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+public class signup extends AppCompatActivity implements View.OnClickListener {
     EditText email, password;
     Boolean[] textInEditText = {false, false};
     Button signupBtn;
     ActionBar actionBar;
-
+    FirebaseAuth firebaseAuth;
+    FirebaseUser currentUser;
 
 
     @Override
@@ -31,7 +43,10 @@ public class signup extends AppCompatActivity {
         email = findViewById(R.id.emailAddress);
         password = findViewById(R.id.password);
         signupBtn = findViewById(R.id.signupBtn2);
-        setButtonEnabled(signupBtn,false);
+        setButtonEnabled(signupBtn, false);
+        signupBtn.setOnClickListener(this);
+
+        firebaseAuth = firebaseAuth.getInstance();
 
 
         email.addTextChangedListener(new TextWatcher() {
@@ -80,6 +95,7 @@ public class signup extends AppCompatActivity {
             }
         });
     }
+
     public void setButtonEnabled(Button btn, Boolean enable) {
         if (enable == false) {
             btn.setClickable(false);
@@ -87,6 +103,29 @@ public class signup extends AppCompatActivity {
         } else {
             btn.setClickable(true);
             btn.setAlpha(1f);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == signupBtn) {
+            firebaseAuth.createUserWithEmailAndPassword(
+                    email.getText().toString(),
+                    password.getText().toString()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        Log.d("TAG", "createUserWithEmail:success");
+                        Toast.makeText(signup.this, "Successfully registered", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(signup.this,MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(signup.this, "Registration failed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
         }
     }
 }
