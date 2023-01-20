@@ -118,8 +118,8 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
                     if (task.isSuccessful()) {
                         Log.d("TAG", "createUserWithEmail:success");
                         Toast.makeText(signup.this, "Successfully registered uid: "+task.getResult().getUser().getUid(), Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(signup.this,MainActivity.class);
-                        startActivity(intent);
+//                        Intent intent = new Intent(signup.this,MainActivity.class);
+//                        startActivity(intent);
                         finish();
                     } else {
                         Toast.makeText(signup.this, "Registration failed", Toast.LENGTH_SHORT).show();

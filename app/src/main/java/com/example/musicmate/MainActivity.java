@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -24,9 +25,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
 
         SharedPreferences sp;
-        sp = getSharedPreferences("userInfo",MODE_PRIVATE);
-        if(sp.contains("userUid") && sp.contains("userEmail")){
+
+        sp = getSharedPreferences("userInfo", MODE_PRIVATE);
+        if (sp.contains("userUid") && sp.contains("userEmail")) {
             //do something if user logged in!
+            Log.d("exist","user exists in the system");
+            Intent intent = new Intent(MainActivity.this, afterlogin.class);
+            startActivity(intent);
+            finish();
+            return;
         }
 
         setContentView(R.layout.activity_main);
@@ -54,11 +61,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v == login) {
             Intent intent = new Intent(MainActivity.this, login.class);
             startActivity(intent);
+            finish();
         }
         if (v == signup) {
             Intent intent = new Intent(MainActivity.this, signup.class);
             startActivity(intent);
-//            finish();
         }
     }
 }
