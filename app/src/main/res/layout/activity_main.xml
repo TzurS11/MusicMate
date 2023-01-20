@@ -13,7 +13,8 @@
         android:layout_height="77dp"
         android:layout_marginTop="92dp"
         android:backgroundTint="@color/primary"
-        android:fontFamily="@font/rubik_medium"
+        android:background="@drawable/button"
+        android:fontFamily="@font/amiko"
         android:text="Sign up"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -27,7 +28,8 @@
         android:layout_width="210dp"
         android:layout_height="77dp"
         android:backgroundTint="@color/primary"
-        android:fontFamily="@font/rubik_medium"
+        android:background="@drawable/button"
+        android:fontFamily="@font/amiko"
         android:text="Login"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -39,17 +41,16 @@
 
     <TextView
         android:id="@+id/WelcomeTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/rubik"
+        android:layout_width="412dp"
+        android:layout_height="153dp"
+        android:fontFamily="@font/amiko"
         android:gravity="center"
         android:text="Welcome to MusicMate!"
         android:textColor="#ffffff"
-        android:textSize="60sp"
+        android:textSize="50sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.137" />
+        app:layout_constraintVertical_bias="0.136" />
 </androidx.constraintlayout.widget.ConstraintLayout>

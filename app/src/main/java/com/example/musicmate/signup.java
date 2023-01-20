@@ -5,13 +5,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -25,9 +28,11 @@ import com.google.firebase.auth.FirebaseUser;
 public class signup extends AppCompatActivity implements View.OnClickListener {
     EditText email, password;
     Boolean[] textInEditText = {false, false};
-    Button signupBtn;
+    Button signupBtn, submitSignup, revertSignup;
     ActionBar actionBar;
     FirebaseAuth firebaseAuth;
+
+    FirebaseUser firebaseUser;
 
 
     @Override
@@ -45,8 +50,8 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
         setButtonEnabled(signupBtn, false);
         signupBtn.setOnClickListener(this);
 
-        firebaseAuth = firebaseAuth.getInstance();
 
+        firebaseAuth = firebaseAuth.getInstance();
 
         email.addTextChangedListener(new TextWatcher() {
             @Override
@@ -82,7 +87,7 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
                 if (s.length() >= 8) textInEditText[1] = true;
 
 
-                if (textInEditText[0] && textInEditText[1] ) {
+                if (textInEditText[0] && textInEditText[1]) {
                     setButtonEnabled(signupBtn, true);
                 } else {
                     setButtonEnabled(signupBtn, false);
@@ -110,23 +115,55 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v == signupBtn) {
-            firebaseAuth.createUserWithEmailAndPassword(
-                    email.getText().toString(),
-                    password.getText().toString()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        Log.d("TAG", "createUserWithEmail:success");
-                        Toast.makeText(signup.this, "Successfully registered uid: "+task.getResult().getUser().getUid(), Toast.LENGTH_SHORT).show();
-//                        Intent intent = new Intent(signup.this,MainActivity.class);
-//                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(signup.this, "Registration failed", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
+            showDialog();
         }
     }
+
+    private void showDialog() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.submitsignup);
+        dialog.setCancelable(false);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+
+        Button submitSignup = dialog.findViewById(R.id.submitBtn);
+        Button revertSignup = dialog.findViewById(R.id.revertBtn);
+
+
+        revertSignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                return;
+            }
+        });
+
+        submitSignup.setOnClickListener(new View.OnClickListener() {
+
+
+            @Override
+            public void onClick(View view) {
+                firebaseAuth.createUserWithEmailAndPassword(
+                        email.getText().toString(),
+                        password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            dialog.dismiss();
+                            Log.d("TAG", "createUserWithEmail:success");
+                            Toast.makeText(signup.this, "Successfully registered", Toast.LENGTH_SHORT).show();
+                            finish();
+                            return;
+                        } else {
+                            Toast.makeText(signup.this, "Registration failed, please try again.", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            return;
+                        }
+                    }
+                });
+            }
+        });
+        dialog.show();
+    }
+
 }
