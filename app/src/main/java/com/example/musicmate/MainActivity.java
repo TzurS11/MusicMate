@@ -19,17 +19,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button login, signup;
     TextView welcome;
     ActionBar actionBar;
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences sp;
-
         sp = getSharedPreferences("userInfo", MODE_PRIVATE);
         if (sp.contains("userUid") && sp.contains("userEmail")) {
-            //do something if user logged in!
-            Log.d("exist","user exists in the system");
             Intent intent = new Intent(MainActivity.this, afterlogin.class);
             startActivity(intent);
             finish();
