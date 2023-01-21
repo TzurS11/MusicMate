@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,10 +22,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ActionBar actionBar;
     SharedPreferences sp;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         sp = getSharedPreferences("userInfo", MODE_PRIVATE);
         if (sp.contains("userUid") && sp.contains("userEmail")) {
             Intent intent = new Intent(MainActivity.this, afterlogin.class);

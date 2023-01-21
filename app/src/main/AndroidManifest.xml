@@ -13,7 +13,8 @@
         android:theme="@style/Theme.MusicMate">
         <activity
             android:name=".afterlogin"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".login"
             android:exported="false"
