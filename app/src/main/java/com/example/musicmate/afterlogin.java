@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.musicmate.databinding.ActivityAfterloginBinding;
-import com.example.musicmate.databinding.ActivityMainBinding;
 
 public class afterlogin extends AppCompatActivity implements View.OnClickListener {
     ActionBar actionBar;
@@ -24,10 +23,6 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityAfterloginBinding.inflate(getLayoutInflater());
-
-
-
-
 
         setContentView(binding.getRoot());
         replaceFragment(new SearchFrag());
