@@ -1,5 +1,7 @@
 package com.example.musicmate;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,13 +9,18 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SettingsFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SettingsFrag extends Fragment {
+public class SettingsFrag extends Fragment implements View.OnClickListener {
+
+    private View mView;
+    Button logout;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -53,12 +60,26 @@ public class SettingsFrag extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mView = inflater.inflate(R.layout.fragment_settings, container, false);
+        logout = mView.findViewById(R.id.logoutBtn);
+        logout.setOnClickListener(this);
+        return mView;
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        if (view == logout) {
+            getActivity().deleteSharedPreferences("userInfo");
+            Intent intent = new Intent(getActivity(),MainActivity.class);
+            startActivity(intent);
+            getActivity().finish();
+            Toast.makeText(getActivity(), "logged out", Toast.LENGTH_SHORT).show();
+        }
     }
 }

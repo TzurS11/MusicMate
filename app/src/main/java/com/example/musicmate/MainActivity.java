@@ -59,10 +59,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v == login) {
             Intent intent = new Intent(MainActivity.this, login.class);
             startActivity(intent);
+            finish();
         }
         if (v == signup) {
             Intent intent = new Intent(MainActivity.this, signup.class);
             startActivity(intent);
+            finish();
         }
     }
 }

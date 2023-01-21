@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.musicmate.databinding.ActivityAfterloginBinding;
 import com.example.musicmate.databinding.ActivityMainBinding;
@@ -23,6 +24,11 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityAfterloginBinding.inflate(getLayoutInflater());
+
+
+
+
+
         setContentView(binding.getRoot());
         replaceFragment(new SearchFrag());
         currentScreen = "search";
@@ -52,10 +58,10 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
         });
     }
 
-    private void replaceFragment(Fragment frag){
+    private void replaceFragment(Fragment frag) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_layout,frag);
+        fragmentTransaction.replace(R.id.frame_layout, frag);
         fragmentTransaction.commit();
     }
 
