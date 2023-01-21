@@ -25,6 +25,7 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
         binding = ActivityAfterloginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         replaceFragment(new SearchFrag());
+        currentScreen = "search";
 
 
         actionBar = getSupportActionBar();
