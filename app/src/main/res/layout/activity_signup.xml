@@ -22,6 +22,21 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.638" />
 
+    <Button
+        android:id="@+id/signupBackBtn"
+        android:layout_width="143dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="92dp"
+        android:background="@drawable/button"
+        android:fontFamily="@font/amiko"
+        android:text="back"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.812" />
+
     <TextView
         android:id="@+id/SignupTv"
         android:layout_width="wrap_content"

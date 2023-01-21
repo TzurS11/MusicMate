@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 public class login extends AppCompatActivity implements View.OnClickListener {
     EditText email, password;
     Boolean[] textInEditText = {false, false};
-    Button loginBtn;
+    Button loginBtn, backBtn;
     ActionBar actionBar;
     SharedPreferences sp;
 
@@ -47,9 +47,10 @@ public class login extends AppCompatActivity implements View.OnClickListener {
         setButtonEnabled(loginBtn, false);
         loginBtn.setOnClickListener(this);
 
+        backBtn = findViewById(R.id.loginBackBtn);
+        backBtn.setOnClickListener(this);
+
         firebaseAuth = firebaseAuth.getInstance();
-
-
 
 
         email.addTextChangedListener(new TextWatcher() {
@@ -86,7 +87,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                 if (s.length() >= 8) textInEditText[1] = true;
 
 
-                if (textInEditText[0] && textInEditText[1] ) {
+                if (textInEditText[0] && textInEditText[1]) {
                     setButtonEnabled(loginBtn, true);
                 } else {
                     setButtonEnabled(loginBtn, false);
@@ -104,7 +105,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
     public void setButtonEnabled(Button btn, Boolean enable) {
         if (enable == false) {
             btn.setClickable(false);
-            btn.setAlpha(0.5f);
+            btn.setAlpha(1f);
             btn.setEnabled(false);
         } else {
             btn.setClickable(true);
@@ -116,23 +117,29 @@ public class login extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        if(view == loginBtn){
-            firebaseAuth.signInWithEmailAndPassword(email.getText().toString(),password.getText().toString()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        if (view == backBtn) {
+            Intent intent = new Intent(login.this,MainActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+        if (view == loginBtn) {
+            firebaseAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         Toast.makeText(login.this, "Login was successful", Toast.LENGTH_SHORT).show();
 
                         sp = getSharedPreferences("userInfo", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sp.edit();
-                        editor.putString("userUid",task.getResult().getUser().getUid());
+                        editor.putString("userUid", task.getResult().getUser().getUid());
                         editor.putString("userEmail", task.getResult().getUser().getEmail());
                         editor.commit();
 
-                        Intent intent = new Intent(login.this,MainActivity.class);
+                        Intent intent = new Intent(login.this, MainActivity.class);
                         startActivity(intent);
-                        finish();
-                    }else{
+                        finishAffinity();
+                    } else {
                         Toast.makeText(login.this, "Failed to login", Toast.LENGTH_SHORT).show();
                     }
                 }

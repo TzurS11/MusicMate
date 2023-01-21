@@ -29,7 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class signup extends AppCompatActivity implements View.OnClickListener {
     EditText email, password;
     Boolean[] textInEditText = {false, false};
-    Button signupBtn, submitSignup, revertSignup;
+    Button signupBtn, backBtn;
     ActionBar actionBar;
     FirebaseAuth firebaseAuth;
 
@@ -50,6 +50,9 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
         signupBtn = findViewById(R.id.signupBtn2);
         setButtonEnabled(signupBtn, false);
         signupBtn.setOnClickListener(this);
+
+        backBtn = findViewById(R.id.signupBackBtn);
+        backBtn.setOnClickListener(this);
 
 
         firebaseAuth = firebaseAuth.getInstance();
@@ -104,7 +107,7 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
     public void setButtonEnabled(Button btn, Boolean enable) {
         if (enable == false) {
             btn.setClickable(false);
-            btn.setAlpha(0.5f);
+            btn.setAlpha(1f);
             btn.setEnabled(false);
         } else {
             btn.setClickable(true);
@@ -115,8 +118,16 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        if (v == backBtn) {
+            Intent intent = new Intent(signup.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         if (v == signupBtn) {
             showDialog();
+            return;
         }
     }
 
