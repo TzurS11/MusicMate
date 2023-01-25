@@ -7,27 +7,51 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.musicmate.databinding.ActivityAfterloginBinding;
 
+import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class afterlogin extends AppCompatActivity implements View.OnClickListener {
     ActionBar actionBar;
     ActivityAfterloginBinding binding;
-    String currentScreen;
+    public String currentScreen;
+
+
+    public MediaPlayer mediaPlayer = new MediaPlayer();
+    public Boolean datasourceExist = false;
+
+
+    Fragment searchFrag = new SearchFrag();
+    Fragment playlistsFrag = new PlaylistsFrag();
+    Fragment settingsFrag = new SettingsFrag();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .build()
+        );
+
+
         binding = ActivityAfterloginBinding.inflate(getLayoutInflater());
 
         setContentView(binding.getRoot());
         replaceFragment(new SearchFrag());
         currentScreen = "search";
-
 
         actionBar = getSupportActionBar();
         actionBar.hide();
@@ -37,20 +61,22 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
             switch (item.getItemId()) {
                 case R.id.search:
                     currentScreen = "search";
-                    replaceFragment(new SearchFrag());
+                    replaceFragment(searchFrag);
                     break;
                 case R.id.playlists:
                     currentScreen = "playlists";
-                    replaceFragment(new PlaylistsFrag());
+                    replaceFragment(playlistsFrag);
                     break;
                 case R.id.settings:
                     currentScreen = "settings";
-                    replaceFragment(new SettingsFrag());
+                    replaceFragment(settingsFrag);
                     break;
             }
 
             return true;
         });
+
+
     }
 
     private void replaceFragment(Fragment frag) {
@@ -59,6 +85,7 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
         fragmentTransaction.replace(R.id.frame_layout, frag);
         fragmentTransaction.commit();
     }
+
 
     @Override
     public void onClick(View view) {
