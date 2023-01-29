@@ -27,7 +27,7 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
     public String currentScreen;
 
 
-    public MediaPlayer mediaPlayer = new MediaPlayer();
+    public static MediaPlayer mediaPlayer = new MediaPlayer();
     public Boolean datasourceExist = false;
 
 
@@ -84,6 +84,9 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, frag);
         fragmentTransaction.commit();
+    }
+    public MediaPlayer getMediaPlayer(){
+        return mediaPlayer;
     }
 
 

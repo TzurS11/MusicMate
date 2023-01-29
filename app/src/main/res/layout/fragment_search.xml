@@ -11,41 +11,46 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/playBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Play"
+        <EditText
+            android:id="@+id/queryET"
+            android:layout_width="297dp"
+            android:layout_height="49dp"
+            android:background="@drawable/edit_text"
+            android:ems="10"
+            android:hint="SEARCH BY SONG'S NAME"
+            android:inputType="textPersonName"
+            android:paddingLeft="15dp"
+            android:textColorHint="@color/white"
+            android:textSize="17dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.489"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.449" />
+            app:layout_constraintVertical_bias="0.049" />
 
-        <Button
-            android:id="@+id/pauseBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pause"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.501"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.667" />
+        <ImageView
+            android:id="@+id/searchIV"
+            android:layout_width="43dp"
+            android:layout_height="43dp"
+            android:src="@drawable/search"
+            app:tint="@color/white"
+            app:layout_constraintHorizontal_bias="0.985"
+            app:layout_constraintBottom_toBottomOf="@+id/queryET"
+            app:layout_constraintEnd_toEndOf="@+id/queryET"
+            app:layout_constraintStart_toStartOf="@+id/queryET"
+            app:layout_constraintTop_toTopOf="@+id/queryET" />
 
-        <TextView
-            android:id="@+id/duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Duration"
-            android:textColor="@color/white"
-            android:textSize="40dp"
+        <ListView
+            android:id="@+id/songsLV"
+            android:layout_width="364dp"
+            android:layout_height="565dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.489"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.155" />
+            app:layout_constraintVertical_bias="0.602" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
