@@ -46,7 +46,7 @@ public class createplaylist extends AppCompatActivity implements View.OnClickLis
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        PlaylistRef = FirebaseDatabase.getInstance().getReference("Playlist");
+        PlaylistRef = firebaseDatabase.getReference("Playlist");
     }
 
     @Override
@@ -62,12 +62,12 @@ public class createplaylist extends AppCompatActivity implements View.OnClickLis
     }
 
     public void SavePlaylistToDatabase() {
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        PlaylistRef = FirebaseDatabase.getInstance().getReference("Playlist");
+      //  firebaseDatabase = FirebaseDatabase.getInstance();
+        //PlaylistRef = FirebaseDatabase.getInstance().getReference("Playlist");
         firebaseAuth = firebaseAuth.getInstance();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
 
-        playlist = new Playlist(uid, name.getText().toString(), author.getText().toString(), "", "");
+        playlist = new Playlist(uid, name.getText().toString(), author.getText().toString(), "hghg", "dffddd");
 
         PlaylistRef.child(uid).setValue(playlist);
     }
