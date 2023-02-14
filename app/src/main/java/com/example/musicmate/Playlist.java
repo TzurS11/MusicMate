@@ -9,16 +9,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Playlist implements Serializable {
+    private String userID;
     private String name;
     private String author;
     private String coverImg;
     private String songs;
 
-    public Playlist(String name, String author, String coverImg, String songs) {
+    public Playlist(String userID, String name, String author, String coverImg, String songs) {
+        this.userID = userID;
         this.name = name;
         this.author = author;
         this.coverImg = coverImg;
         this.songs = songs;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public String getName() {
@@ -57,9 +67,12 @@ public class Playlist implements Serializable {
     @Override
     public String toString() {
         return "Playlist : " + "\n" +
+                ", userID= " + this.userID + "\n" +
                 ", name= " + this.name + "\n" +
                 ", author= " + this.author + "\n" +
                 ", coverImg= " + this.name + "\n" +
                 ", songs= " + this.songs + "\n";
     }
+
+
 }

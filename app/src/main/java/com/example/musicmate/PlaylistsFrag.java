@@ -1,5 +1,6 @@
 package com.example.musicmate;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,13 +8,18 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link PlaylistsFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PlaylistsFrag extends Fragment {
+public class PlaylistsFrag extends Fragment implements  View.OnClickListener{
+
+    private View mView;
+    Button createPlaylist;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -56,9 +62,19 @@ public class PlaylistsFrag extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_playlists, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mView = inflater.inflate(R.layout.fragment_playlists, container, false);
+        createPlaylist = mView.findViewById(R.id.createPlaylistBtn);
+        createPlaylist.setOnClickListener(this);
+        return mView;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v == createPlaylist){
+            Intent intent = new Intent(getActivity(),createplaylist.class);
+            startActivity(intent);
+            return;
+        }
     }
 }

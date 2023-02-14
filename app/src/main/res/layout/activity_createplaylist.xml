@@ -16,7 +16,7 @@
         android:fontFamily="@font/amiko"
         android:gravity="center"
         android:inputType="text"
-        android:text="Name"
+        android:hint="Name"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         android:textSize="20dp"
@@ -52,7 +52,7 @@
         android:fontFamily="@font/amiko"
         android:gravity="center"
         android:inputType="text"
-        android:text="Author"
+        android:hint="Author"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         android:textSize="20dp"
@@ -65,8 +65,8 @@
 
     <Button
         android:id="@+id/createPlaylistBtn"
-        android:layout_width="301dp"
-        android:layout_height="95dp"
+        android:layout_width="272dp"
+        android:layout_height="99dp"
         android:background="@drawable/button"
         android:text="Create Playlist"
         android:textAllCaps="false"
