@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class createplaylist extends AppCompatActivity implements View.OnClickListener {
@@ -27,6 +28,7 @@ public class createplaylist extends AppCompatActivity implements View.OnClickLis
     //    FirebaseDatabase ;
     DatabaseReference UserRef, PlaylistRef;
     FirebaseDatabase firebaseDatabase;
+    String imgURI = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,20 +57,23 @@ public class createplaylist extends AppCompatActivity implements View.OnClickLis
             // get image location and save its location probably in a variable(probably need permission).
         }
         if (view == createPlaylist) {
-            // upload data to firebase (check if the user has uploaded an image and if not use a default playlist image).
-            SavePlaylistToDatabase();
-            return;
+            if(imgURI == null){
+                //image doesn't exist
+                SavePlaylistToDatabase(false);
+                return;
+            }else{
+                //image exists
+                return;
+            }
         }
     }
 
-    public void SavePlaylistToDatabase() {
-      //  firebaseDatabase = FirebaseDatabase.getInstance();
+    public void SavePlaylistToDatabase(Boolean withImage) {
+        //firebaseDatabase = FirebaseDatabase.getInstance();
         //PlaylistRef = FirebaseDatabase.getInstance().getReference("Playlist");
         firebaseAuth = firebaseAuth.getInstance();
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
-
-        playlist = new Playlist(uid, name.getText().toString(), author.getText().toString(), "hghg", "dffddd");
-
+        playlist = new Playlist(uid, name.getText().toString(), author.getText().toString(), "hghg", new ArrayList<String>());
         PlaylistRef.child(uid).setValue(playlist);
     }
 }

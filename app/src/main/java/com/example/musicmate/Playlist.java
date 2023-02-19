@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,9 +14,9 @@ public class Playlist implements Serializable {
     private String name;
     private String author;
     private String coverImg;
-    private String songs;
+    private ArrayList<String> songs;
 
-    public Playlist(String userID, String name, String author, String coverImg, String songs) {
+    public Playlist(String userID, String name, String author, String coverImg, ArrayList<String> songs) {
         this.userID = userID;
         this.name = name;
         this.author = author;
@@ -55,13 +56,14 @@ public class Playlist implements Serializable {
         this.coverImg = coverImg;
     }
 
-    public String getSongs() {
+    public ArrayList<String> getSongs() {
         return songs;
     }
 
-    public void setSongs(String songs) {
+    public void setSongs(ArrayList<String> songs) {
         this.songs = songs;
     }
+
 
     @NonNull
     @Override
