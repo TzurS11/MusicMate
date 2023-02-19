@@ -64,6 +64,21 @@ public class Playlist implements Serializable {
         this.songs = songs;
     }
 
+    public boolean addSong(String id) {
+        if (songs.contains(id)) {
+            return false;
+        }
+        songs.add(id);
+        return true;
+    }
+
+    public boolean deleteSong(String id) {
+        if (songs.contains(id)) {
+            return false;
+        }
+        songs.remove(id);
+        return true;
+    }
 
     @NonNull
     @Override

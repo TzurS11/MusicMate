@@ -62,6 +62,7 @@ public class createplaylist extends AppCompatActivity implements View.OnClickLis
                 SavePlaylistToDatabase(false);
                 return;
             }else{
+                SavePlaylistToDatabase(true);
                 //image exists
                 return;
             }
