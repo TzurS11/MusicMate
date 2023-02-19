@@ -108,21 +108,26 @@ public class PlaylistsFrag extends Fragment implements View.OnClickListener {
     }
 
     public void retriveData() {
-
-
         uploadsPlaylists = new ArrayList<>();
+        if(adapter != null) adapter.clear();
 
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         PlaylistRef = FirebaseDatabase.getInstance().getReference("Playlist").child(uid);
         PlaylistRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if(adapter != null) adapter.clear();
                 playlists.setVisibility(View.VISIBLE);
 
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Playlist upload = postSnapshot.getValue(Playlist.class);
                     uploadsPlaylists.add(upload);
-
+                }
+                if(uploadsPlaylists.size() >= 8){
+                    playlists.setStackFromBottom(false);
+                }else{
+                    playlists.setStackFromBottom(true);
                 }
                 adapter = new AllPlaylistsAdapter(getActivity().getApplicationContext(), 1, uploadsPlaylists);
                 playlists.setAdapter(adapter);
@@ -130,7 +135,7 @@ public class PlaylistsFrag extends Fragment implements View.OnClickListener {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                progressDialog.dismiss();
+
             }
         });
     }
@@ -140,6 +145,7 @@ public class PlaylistsFrag extends Fragment implements View.OnClickListener {
         if (v == createPlaylist) {
             Intent intent = new Intent(getActivity(), createplaylist.class);
             startActivity(intent);
+            adapter.clear();
             return;
         }
     }

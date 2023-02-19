@@ -1,25 +1,16 @@
 package com.example.musicmate;
 
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.view.View;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Intent;
-import android.media.AudioAttributes;
-import android.media.MediaPlayer;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.musicmate.databinding.ActivityAfterloginBinding;
-
-import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class afterlogin extends AppCompatActivity implements View.OnClickListener {
     ActionBar actionBar;
@@ -40,11 +31,11 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .build()
-        );
+//        mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+//                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+//                .setUsage(AudioAttributes.USAGE_MEDIA)
+//                .build()
+//        );
 
 
         binding = ActivityAfterloginBinding.inflate(getLayoutInflater());
@@ -85,9 +76,9 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
         fragmentTransaction.replace(R.id.frame_layout, frag);
         fragmentTransaction.commit();
     }
-    public MediaPlayer getMediaPlayer(){
-        return mediaPlayer;
-    }
+//    public MediaPlayer getMediaPlayer(){
+//        return mediaPlayer;
+//    }
 
 
     @Override

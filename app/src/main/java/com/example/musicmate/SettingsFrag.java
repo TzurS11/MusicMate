@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SettingsFrag#newInstance} factory method to
@@ -75,6 +78,7 @@ public class SettingsFrag extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if (view == logout) {
+            FirebaseAuth.getInstance().signOut();
             getActivity().deleteSharedPreferences("userInfo");
             Intent intent = new Intent(getActivity(),MainActivity.class);
             ((afterlogin) getActivity()).mediaPlayer.stop();

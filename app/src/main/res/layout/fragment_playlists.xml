@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".PlaylistsFrag"
-    android:id="@+id/frameLayout">
+    tools:context=".PlaylistsFrag">
 
     <Button
         android:id="@+id/createPlaylistBtn"
@@ -28,11 +28,12 @@
         android:id="@+id/playlists"
         android:layout_width="410dp"
         android:layout_height="490dp"
+        android:background="@drawable/list_border"
         android:divider="#2A000000"
         android:dividerHeight="3dp"
-        android:scrollbars="none"
-        android:background="@drawable/list_border"
         android:listSelector="@drawable/list_selector"
+        android:scrollbars="none"
+        android:stackFromBottom="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
