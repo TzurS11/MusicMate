@@ -1,28 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".PlaylistsFrag">
+    tools:context=".PlaylistsFrag"
+    android:id="@+id/frameLayout">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <Button
+        android:id="@+id/createPlaylistBtn"
+        android:layout_width="282dp"
+        android:layout_height="65dp"
+        android:background="@drawable/button"
+        android:text="Create Playlist"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.061"
+        tools:layout_conversion_absoluteHeight="61dp"
+        tools:layout_conversion_absoluteWidth="244dp" />
 
-        <Button
-            android:id="@+id/createPlaylistBtn"
-            android:layout_width="244dp"
-            android:layout_height="61dp"
-            android:background="@drawable/button"
-            android:text="Create Playlist"
-            android:textSize="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.041" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+    <ListView
+        android:id="@+id/playlists"
+        android:layout_width="410dp"
+        android:layout_height="490dp"
+        android:divider="#2A000000"
+        android:dividerHeight="3dp"
+        android:scrollbars="none"
+        android:background="@drawable/list_border"
+        android:listSelector="@drawable/list_selector"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_conversion_absoluteHeight="548dp"
+        tools:layout_conversion_absoluteWidth="291dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,25 +1,49 @@
 package com.example.musicmate;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link PlaylistsFrag#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PlaylistsFrag extends Fragment implements  View.OnClickListener{
+public class PlaylistsFrag extends Fragment implements View.OnClickListener {
 
     private View mView;
     Button createPlaylist;
+    ListView playlists;
+
+    ArrayList<Playlist> uploadsPlaylists;
+    AllPlaylistsAdapter adapter;
+    Playlist playlist;
+
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference PlaylistRef;
+
+    private ProgressDialog progressDialog;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -64,15 +88,57 @@ public class PlaylistsFrag extends Fragment implements  View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_playlists, container, false);
+
         createPlaylist = mView.findViewById(R.id.createPlaylistBtn);
         createPlaylist.setOnClickListener(this);
+        playlists = mView.findViewById(R.id.playlists);
+        playlists.setVisibility(View.INVISIBLE);
+        retriveData();
+        playlists.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Playlist playlist = (Playlist) playlists.getItemAtPosition(position);
+
+                Toast.makeText(getActivity(), playlist.getPlaylistID(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return mView;
+    }
+
+    public void retriveData() {
+
+
+        uploadsPlaylists = new ArrayList<>();
+
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        PlaylistRef = FirebaseDatabase.getInstance().getReference("Playlist").child(uid);
+        PlaylistRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                playlists.setVisibility(View.VISIBLE);
+
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Playlist upload = postSnapshot.getValue(Playlist.class);
+                    uploadsPlaylists.add(upload);
+
+                }
+                adapter = new AllPlaylistsAdapter(getActivity().getApplicationContext(), 1, uploadsPlaylists);
+                playlists.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                progressDialog.dismiss();
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
-        if(v == createPlaylist){
-            Intent intent = new Intent(getActivity(),createplaylist.class);
+        if (v == createPlaylist) {
+            Intent intent = new Intent(getActivity(), createplaylist.class);
             startActivity(intent);
             return;
         }

@@ -1,5 +1,7 @@
 package com.example.musicmate;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import org.json.JSONObject;
@@ -11,13 +13,18 @@ import java.util.Map;
 
 public class Playlist implements Serializable {
     private String userID;
+    private String playlistID;
     private String name;
     private String author;
     private String coverImg;
     private ArrayList<String> songs;
 
-    public Playlist(String userID, String name, String author, String coverImg, ArrayList<String> songs) {
+    public Playlist() {
+    }
+
+    public Playlist(String userID,String playlistID, String name, String author, String coverImg, ArrayList<String> songs) {
         this.userID = userID;
+        this.playlistID = playlistID;
         this.name = name;
         this.author = author;
         this.coverImg = coverImg;
@@ -30,6 +37,14 @@ public class Playlist implements Serializable {
 
     public void setUserID(String userID) {
         this.userID = userID;
+    }
+
+    public String getPlaylistID() {
+        return playlistID;
+    }
+
+    public void setPlaylistID(String playlistID) {
+        this.playlistID = playlistID;
     }
 
     public String getName() {
@@ -83,12 +98,7 @@ public class Playlist implements Serializable {
     @NonNull
     @Override
     public String toString() {
-        return "Playlist : " + "\n" +
-                ", userID= " + this.userID + "\n" +
-                ", name= " + this.name + "\n" +
-                ", author= " + this.author + "\n" +
-                ", coverImg= " + this.name + "\n" +
-                ", songs= " + this.songs + "\n";
+        return "Playlist : " + "\n" + ", userID= " + this.userID + "\n" + ", name= " + this.name + "\n" + ", author= " + this.author + "\n" + ", coverImg= " + this.name + "\n" + ", songs= " + this.songs + "\n";
     }
 
 

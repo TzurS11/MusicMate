@@ -1,5 +1,6 @@
 package com.example.musicmate;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,7 +11,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -47,8 +52,8 @@ public class createplaylist extends AppCompatActivity implements View.OnClickLis
 
 
         firebaseAuth = FirebaseAuth.getInstance();
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        PlaylistRef = firebaseDatabase.getReference("Playlist");
+        PlaylistRef = FirebaseDatabase.getInstance().getReference("Playlist");
+
     }
 
     @Override
@@ -57,11 +62,12 @@ public class createplaylist extends AppCompatActivity implements View.OnClickLis
             // get image location and save its location probably in a variable(probably need permission).
         }
         if (view == createPlaylist) {
-            if(imgURI == null){
+            if(name.getText().toString().trim().equals("") || author.getText().toString().trim().equals(""))
+            if (imgURI == null) {
                 //image doesn't exist
                 SavePlaylistToDatabase(false);
                 return;
-            }else{
+            } else {
                 SavePlaylistToDatabase(true);
                 //image exists
                 return;
@@ -70,11 +76,25 @@ public class createplaylist extends AppCompatActivity implements View.OnClickLis
     }
 
     public void SavePlaylistToDatabase(Boolean withImage) {
-        //firebaseDatabase = FirebaseDatabase.getInstance();
-        //PlaylistRef = FirebaseDatabase.getInstance().getReference("Playlist");
-        firebaseAuth = firebaseAuth.getInstance();
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid().toString();
-        playlist = new Playlist(uid, name.getText().toString(), author.getText().toString(), "hghg", new ArrayList<String>());
-        PlaylistRef.child(uid).setValue(playlist);
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        PlaylistRef = FirebaseDatabase.getInstance().getReference("Playlist");
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String playlistID = UUID.randomUUID().toString();
+        playlist = new Playlist(uid, playlistID, name.getText().toString(), author.getText().toString(), "hghg", new ArrayList<String>());
+        playlist.addSong("something");
+        PlaylistRef.child(uid).child(playlistID).setValue(playlist).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(createplaylist.this, "Created playlist", Toast.LENGTH_SHORT).show();
+            finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(createplaylist.this, "Failed to create playlist", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
     }
+
 }
