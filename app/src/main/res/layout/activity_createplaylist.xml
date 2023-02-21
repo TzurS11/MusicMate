@@ -7,6 +7,32 @@
     android:background="@drawable/background"
     tools:context=".createplaylist">
 
+    <ImageView
+        android:id="@+id/coverImgPreview"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
+        android:scaleType="centerCrop"
+        android:alpha="0.55"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/songplaceholder" />
+
+    <ImageView
+        android:id="@+id/makeimagetransparent"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/opacitychange" />
+
+
     <EditText
         android:id="@+id/nameEt"
         android:layout_width="223dp"
@@ -15,8 +41,8 @@
         android:ems="10"
         android:fontFamily="@font/amiko"
         android:gravity="center"
-        android:inputType="text"
         android:hint="Name"
+        android:inputType="text"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         android:textSize="20dp"
@@ -51,8 +77,8 @@
         android:ems="10"
         android:fontFamily="@font/amiko"
         android:gravity="center"
-        android:inputType="text"
         android:hint="Author"
+        android:inputType="text"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         android:textSize="20dp"
@@ -77,5 +103,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.819" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

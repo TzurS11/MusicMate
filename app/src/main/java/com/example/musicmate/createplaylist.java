@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,7 +35,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class createplaylist extends AppCompatActivity implements View.OnClickListener {
-
+    ImageView coverImgPreview;
     ActionBar actionBar;
     EditText name, author;
     Button coverImg, createPlaylist;
@@ -55,6 +57,8 @@ public class createplaylist extends AppCompatActivity implements View.OnClickLis
         name = findViewById(R.id.nameEt);
         author = findViewById(R.id.authorEt);
 
+        coverImgPreview = findViewById(R.id.coverImgPreview);
+
         coverImg = findViewById(R.id.coverimgBtn);
         coverImg.setOnClickListener(this);
         createPlaylist = findViewById(R.id.createPlaylistBtn);
@@ -72,6 +76,7 @@ public class createplaylist extends AppCompatActivity implements View.OnClickLis
 
         if (requestCode == 10 && resultCode == RESULT_OK && data != null & data.getData() != null) {
             imageURI = data.getData();
+            coverImgPreview.setImageURI(imageURI);
         }
     }
 
@@ -99,72 +104,31 @@ public class createplaylist extends AppCompatActivity implements View.OnClickLis
     }
 
     public void SavePlaylistToDatabase(Boolean withImage) {
-
         firebaseDatabase = FirebaseDatabase.getInstance();
         PlaylistRef = FirebaseDatabase.getInstance().getReference("Playlist");
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String playlistID = UUID.randomUUID().toString();
         playlist = new Playlist(uid, playlistID, name.getText().toString(), author.getText().toString(), null, new ArrayList<String>());
         playlist.addSong("something");
-        if (withImage == false) {
-            PlaylistRef.child(uid).child(playlistID).setValue(playlist).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    Toast.makeText(createplaylist.this, "Created playlist", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(createplaylist.this, "Failed to create playlist", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            });
-        } else {
-
-            storageReference = FirebaseStorage.getInstance().getReference("playlistCoverImg/" + playlist.getPlaylistID());
-            storageReference.putFile(imageURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    playlist.setCoverImg(taskSnapshot.getStorage().getPath());
-                    PlaylistRef.child(uid).child(playlistID).setValue(playlist).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Toast.makeText(createplaylist.this, "Created playlist", Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(createplaylist.this, "Failed to create playlist", Toast.LENGTH_SHORT).show();
-                            FirebaseStorage.getInstance().getReference("playlistCoverImg/" + playlist.getPlaylistID()).delete();
-                            finish();
-                        }
-                    });
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    playlist.setCoverImg(null);
-                    PlaylistRef.child(uid).child(playlistID).setValue(playlist).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Toast.makeText(createplaylist.this, "Created playlist", Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(createplaylist.this, "Failed to create playlist", Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                    });
-                }
-            });
-
-
+        if (imageURI != null) {
+            playlist.setCoverImg("/playlistCoverImg/" + playlist.getUserID() + "/" + playlist.getPlaylistID());
+            storageReference = FirebaseStorage.getInstance().getReference("playlistCoverImg/" + playlist.getUserID() + "/" + playlist.getPlaylistID());
+            storageReference.putFile(imageURI);
         }
-
+        PlaylistRef.child(uid).child(playlistID).setValue(playlist).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(createplaylist.this, "Created playlist", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(createplaylist.this, "Failed to create playlist", Toast.LENGTH_SHORT).show();
+                FirebaseStorage.getInstance().getReference("playlistCoverImg/" + playlist.getPlaylistID()).delete();
+                finish();
+            }
+        });
     }
 
 }

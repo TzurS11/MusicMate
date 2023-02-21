@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -78,6 +79,8 @@ public class SettingsFrag extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if (view == logout) {
+            MusicPlayer.player.stop();
+            MusicPlayer.player.release();
             FirebaseAuth.getInstance().signOut();
             getActivity().deleteSharedPreferences("userInfo");
             Intent intent = new Intent(getActivity(),MainActivity.class);

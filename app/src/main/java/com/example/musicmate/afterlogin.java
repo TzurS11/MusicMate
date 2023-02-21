@@ -11,6 +11,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.musicmate.databinding.ActivityAfterloginBinding;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.MediaItem;
 
 public class afterlogin extends AppCompatActivity implements View.OnClickListener {
     ActionBar actionBar;
@@ -23,7 +25,7 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
 
 
     Fragment searchFrag = new SearchFrag();
-    Fragment playlistsFrag = new PlaylistsFrag();
+    public Fragment playlistsFrag = new PlaylistsFrag();
     Fragment settingsFrag = new SettingsFrag();
 
 
@@ -31,11 +33,12 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
-//                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-//                .setUsage(AudioAttributes.USAGE_MEDIA)
-//                .build()
-//        );
+//        MusicPlayer musicPlayer = new MusicPlayer(getApplicationContext());
+//        MediaItem mediaItem = MediaItem.fromUri("https://firebasestorage.googleapis.com/v0/b/musicmate-619b1.appspot.com/o/songs%2Fallofme.flac?alt=media&token=06a5e32c-02be-444e-b48d-f320706bfd39");
+//        MusicPlayer.player.addMediaItem(mediaItem);
+//        MusicPlayer.player.prepare();
+//        MusicPlayer.player.play();
+
 
 
         binding = ActivityAfterloginBinding.inflate(getLayoutInflater());
