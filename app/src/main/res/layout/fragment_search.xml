@@ -20,6 +20,7 @@
             android:hint="SEARCH BY SONG'S NAME"
             android:inputType="textPersonName"
             android:paddingLeft="15dp"
+            android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textSize="17dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -34,23 +35,32 @@
             android:layout_width="43dp"
             android:layout_height="43dp"
             android:src="@drawable/search"
-            app:tint="@color/white"
-            app:layout_constraintHorizontal_bias="0.985"
             app:layout_constraintBottom_toBottomOf="@+id/queryET"
             app:layout_constraintEnd_toEndOf="@+id/queryET"
+            app:layout_constraintHorizontal_bias="0.985"
             app:layout_constraintStart_toStartOf="@+id/queryET"
-            app:layout_constraintTop_toTopOf="@+id/queryET" />
+            app:layout_constraintTop_toTopOf="@+id/queryET"
+            app:tint="@color/white" />
 
         <ListView
             android:id="@+id/songsLV"
-            android:layout_width="364dp"
-            android:layout_height="565dp"
+            android:layout_width="match_parent"
+            android:layout_height="490dp"
+            android:background="@drawable/list_border"
+            android:divider="#2A000000"
+            android:dividerHeight="3dp"
+            android:listSelector="@drawable/list_selector"
+            android:scrollbars="none"
+            android:stackFromBottom="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.489"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.602" />
+            app:layout_constraintVertical_bias="1.0"
+            tools:layout_conversion_absoluteHeight="548dp"
+            tools:layout_conversion_absoluteWidth="291dp" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

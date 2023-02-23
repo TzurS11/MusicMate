@@ -108,8 +108,8 @@ public class createplaylist extends AppCompatActivity implements View.OnClickLis
         PlaylistRef = FirebaseDatabase.getInstance().getReference("Playlist");
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         String playlistID = UUID.randomUUID().toString();
-        playlist = new Playlist(uid, playlistID, name.getText().toString(), author.getText().toString(), null, new ArrayList<String>());
-        playlist.addSong("something");
+
+        playlist = new Playlist(uid, playlistID, name.getText().toString(), author.getText().toString(), null, null);
         if (imageURI != null) {
             playlist.setCoverImg("/playlistCoverImg/" + playlist.getUserID() + "/" + playlist.getPlaylistID());
             storageReference = FirebaseStorage.getInstance().getReference("playlistCoverImg/" + playlist.getUserID() + "/" + playlist.getPlaylistID());

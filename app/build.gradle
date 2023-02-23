@@ -37,6 +37,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.jakewharton.rxbinding:rxbinding:0.4.0'
     implementation 'com.google.android.exoplayer:exoplayer:2.18.3'
     implementation 'com.squareup.picasso:picasso:2.8'
     implementation 'androidx.appcompat:appcompat:1.6.0'

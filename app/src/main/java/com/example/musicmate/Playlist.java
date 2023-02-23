@@ -8,7 +8,9 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Playlist implements Serializable {
@@ -72,6 +74,9 @@ public class Playlist implements Serializable {
     }
 
     public ArrayList<String> getSongs() {
+        if(songs == null){
+            songs = new ArrayList<>();
+        }
         return songs;
     }
 
@@ -80,6 +85,9 @@ public class Playlist implements Serializable {
     }
 
     public boolean addSong(String id) {
+        if(songs == null){
+            songs = new ArrayList<>();
+        }
         if (songs.contains(id)) {
             return false;
         }
@@ -88,18 +96,10 @@ public class Playlist implements Serializable {
     }
 
     public boolean deleteSong(String id) {
-        if (songs.contains(id)) {
+        if (!songs.contains(id)) {
             return false;
         }
         songs.remove(id);
         return true;
     }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "Playlist : " + "\n" + ", userID= " + this.userID + "\n" + ", name= " + this.name + "\n" + ", author= " + this.author + "\n" + ", coverImg= " + this.name + "\n" + ", songs= " + this.songs + "\n";
-    }
-
-
 }

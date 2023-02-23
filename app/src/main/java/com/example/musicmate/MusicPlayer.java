@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.exoplayer2.ExoPlayer;
 
-public class MusicPlayer extends AppCompatActivity{
+public class MusicPlayer extends AppCompatActivity {
     public static ExoPlayer player;
 
     public MusicPlayer() {

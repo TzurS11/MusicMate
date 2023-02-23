@@ -129,7 +129,7 @@ public class PlaylistsFrag extends Fragment implements View.OnClickListener {
                 } else {
                     playlists.setStackFromBottom(true);
                 }
-                adapter = new AllPlaylistsAdapter(getActivity().getApplicationContext(), 1, uploadsPlaylists);
+                adapter = new AllPlaylistsAdapter(mView.getContext().getApplicationContext(), 1, uploadsPlaylists);
                 playlists.setAdapter(adapter);
             }
 
