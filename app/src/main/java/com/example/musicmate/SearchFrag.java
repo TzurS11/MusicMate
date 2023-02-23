@@ -139,14 +139,15 @@ public class SearchFrag extends Fragment {
 
     public void retriveData() {
         uploadsSongs = new ArrayList<>();
+        ArrayList<String> alreadyIn = new ArrayList<>();
         if (adapter != null) adapter.clear();
 
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         SongRef = FirebaseDatabase.getInstance().getReference("songs");
-        Query querySeach = SongRef.orderByChild("name")
-                .startAt(query.getText().toString().toUpperCase())
-                .endAt(query.getText().toString().toLowerCase() + "\uf8ff");
-        querySeach.addValueEventListener(new ValueEventListener() {
+//        Query querySeach = SongRef.orderByChild("name")
+//                .startAt(query.getText().toString().toUpperCase())
+//                .endAt(query.getText().toString().toLowerCase() + "\uf8ff");
+        SongRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -155,7 +156,23 @@ public class SearchFrag extends Fragment {
 
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Song upload = postSnapshot.getValue(Song.class);
-                    uploadsSongs.add(upload);
+
+                    if (query.getText().toString().trim().equals("")) {
+                        if (uploadsSongs.size() < 20 && Math.round(Math.random() * 20) == 10) {
+                            uploadsSongs.add(upload);
+                        }
+                    } else {
+                        String[] querySplit = query.getText().toString().split(" ");
+                        for (int i = 0; i < querySplit.length; i++) {
+                            if (upload.getname().toLowerCase().contains(querySplit[i]) && !alreadyIn.contains(upload.getid())) {
+                                uploadsSongs.add(upload);
+                                alreadyIn.add(upload.getid());
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+
                 }
                 if (uploadsSongs.size() >= 8) {
                     songs.setStackFromBottom(false);
