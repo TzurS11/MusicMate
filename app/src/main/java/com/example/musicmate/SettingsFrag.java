@@ -84,8 +84,6 @@ public class SettingsFrag extends Fragment implements View.OnClickListener {
             FirebaseAuth.getInstance().signOut();
             getActivity().deleteSharedPreferences("userInfo");
             Intent intent = new Intent(getActivity(),MainActivity.class);
-            ((afterlogin) getActivity()).mediaPlayer.stop();
-            ((afterlogin) getActivity()).mediaPlayer.release();
             startActivity(intent);
             getActivity().finish();
             Toast.makeText(getActivity(), "logged out", Toast.LENGTH_SHORT).show();

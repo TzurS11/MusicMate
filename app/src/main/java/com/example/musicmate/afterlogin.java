@@ -14,15 +14,10 @@ import com.example.musicmate.databinding.ActivityAfterloginBinding;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 
-public class afterlogin extends AppCompatActivity implements View.OnClickListener {
+public class afterlogin extends AppCompatActivity {
     ActionBar actionBar;
     ActivityAfterloginBinding binding;
     public String currentScreen;
-
-
-    public static MediaPlayer mediaPlayer = new MediaPlayer();
-    public Boolean datasourceExist = false;
-
 
     Fragment searchFrag = new SearchFrag();
     public Fragment playlistsFrag = new PlaylistsFrag();
@@ -33,8 +28,8 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        MusicPlayer musicPlayer = new MusicPlayer(getApplicationContext());
-//        MediaItem mediaItem = MediaItem.fromUri("https://firebasestorage.googleapis.com/v0/b/musicmate-619b1.appspot.com/o/songs%2Fallofme.flac?alt=media&token=06a5e32c-02be-444e-b48d-f320706bfd39");
+//        new MusicPlayer(getApplicationContext());
+//        MediaItem mediaItem = MediaItem.fromUri("https://cdn.discordapp.com/attachments/966001253991735326/1078424589429919906/door.ogg");
 //        MusicPlayer.player.addMediaItem(mediaItem);
 //        MusicPlayer.player.prepare();
 //        MusicPlayer.player.play();
@@ -79,12 +74,5 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
         fragmentTransaction.replace(R.id.frame_layout, frag);
         fragmentTransaction.commit();
     }
-//    public MediaPlayer getMediaPlayer(){
-//        return mediaPlayer;
-//    }
 
-
-    @Override
-    public void onClick(View view) {
-    }
 }

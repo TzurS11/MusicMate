@@ -1,6 +1,9 @@
 package com.example.musicmate;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioAttributes;
@@ -12,11 +15,16 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.KeyboardShortcutGroup;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +45,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -111,6 +121,11 @@ public class SearchFrag extends Fragment {
 
     }
 
+    public void closeKeyboard(EditText editText) {
+        InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(editText.getApplicationWindowToken(), 0);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_search, container, false);
@@ -119,6 +134,19 @@ public class SearchFrag extends Fragment {
 
         songs = mView.findViewById(R.id.songsLV);
 
+        query.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    // Perform action on key press
+                    closeKeyboard(query);
+                    retriveData();
+                    return true;
+                }
+                return false;
+            }
+        });
         RxTextView.textChanges(query)
                 .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(textChanged -> {
@@ -150,6 +178,7 @@ public class SearchFrag extends Fragment {
         SongRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                Log.wtf("tag",String.valueOf(similarity("our painted sky", "our painted sky")));
 
                 if (adapter != null) adapter.clear();
                 songs.setVisibility(View.VISIBLE);
@@ -162,22 +191,20 @@ public class SearchFrag extends Fragment {
                             uploadsSongs.add(upload);
                         }
                     } else {
-                        String[] querySplit = query.getText().toString().split(" ");
-                        for (int i = 0; i < querySplit.length; i++) {
-                            if (upload.getname().toLowerCase().contains(querySplit[i]) && !alreadyIn.contains(upload.getid())) {
-                                uploadsSongs.add(upload);
-                                alreadyIn.add(upload.getid());
-                            } else {
-                                break;
-                            }
+//                        Log.wtf("tag", upload.getname().toLowerCase() + " + " + query.getText().toString().toLowerCase() + " = " + similarity(upload.getname().toLowerCase(), query.getText().toString().toLowerCase()));
+                        if (similarity(upload.getname().toLowerCase().trim(), query.getText().toString().toLowerCase().trim()) >= 0.35 || similarity(upload.getArtist().toLowerCase().trim(), query.getText().toString().toLowerCase().trim()) >= 0.35 && !alreadyIn.contains(upload.getid())) {
+                            uploadsSongs.add(upload);
+                            alreadyIn.add(upload.getid());
                         }
+//                        String[] querySplit = query.getText().toString().split(" ");
+//                        for (int i = 0; i < querySplit.length; i++) {
+//                            if ((upload.getname().toLowerCase().contains(querySplit[i].toLowerCase()) || upload.getArtist().toLowerCase().contains(querySplit[i].toLowerCase())) && !alreadyIn.contains(upload.getid())) {
+//                                uploadsSongs.add(upload);
+//                                alreadyIn.add(upload.getid());
+//                            }
+//                        }
                     }
 
-                }
-                if (uploadsSongs.size() >= 8) {
-                    songs.setStackFromBottom(false);
-                } else {
-                    songs.setStackFromBottom(true);
                 }
 
                 adapter = new AllSongsAdapter(mView.getContext().getApplicationContext(), 1, uploadsSongs);
@@ -253,6 +280,12 @@ public class SearchFrag extends Fragment {
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
         ImageView songCoverPreview = dialog.findViewById(R.id.coverImgPreview);
+        TextView songTitlePreview = dialog.findViewById(R.id.songNamePreview);
+        TextView songArtistPreview = dialog.findViewById(R.id.songArtistPreview);
+        songTitlePreview.setText(song.getname());
+        songTitlePreview.setSelected(true);
+        songArtistPreview.setText(song.getArtist());
+        songArtistPreview.setSelected(true);
 
         if (song.getCoverImg() != null) {
             FirebaseStorage.getInstance().getReference(song.getCoverImg()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -271,6 +304,81 @@ public class SearchFrag extends Fragment {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().setAttributes(lp);
         dialog.show();
+    }
+
+
+    public static double similarity(String s1, String s2) {
+        String longer = s1, shorter = s2;
+        if (s1.length() < s2.length()) {
+            longer = s2;
+            shorter = s1;
+        }
+        int longerLength = longer.length();
+        if (longerLength == 0) {
+            return 1.0; /* both strings have zero length */
+        }
+        return (longerLength - getLevenshteinDistance(longer, shorter)) / (double) longerLength;
+    }
+
+
+    public static int getLevenshteinDistance(String s, String t) {
+        if (s == null || t == null) {
+            throw new IllegalArgumentException("Strings must not be null");
+        }
+
+        int n = s.length(); // length of s
+        int m = t.length(); // length of t
+
+        if (n == 0) {
+            return m;
+        } else if (m == 0) {
+            return n;
+        }
+
+        if (n > m) {
+            // swap the input strings to consume less memory
+            String tmp = s;
+            s = t;
+            t = tmp;
+            n = m;
+            m = t.length();
+        }
+
+        int p[] = new int[n + 1]; //'previous' cost array, horizontally
+        int d[] = new int[n + 1]; // cost array, horizontally
+        int _d[]; //placeholder to assist in swapping p and d
+
+        // indexes into strings s and t
+        int i; // iterates through s
+        int j; // iterates through t
+
+        char t_j; // jth character of t
+
+        int cost; // cost
+
+        for (i = 0; i <= n; i++) {
+            p[i] = i;
+        }
+
+        for (j = 1; j <= m; j++) {
+            t_j = t.charAt(j - 1);
+            d[0] = j;
+
+            for (i = 1; i <= n; i++) {
+                cost = s.charAt(i - 1) == t_j ? 0 : 1;
+                // minimum of cell to the left+1, to the top+1, diagonally left and up +cost
+                d[i] = Math.min(Math.min(d[i - 1] + 1, p[i] + 1), p[i - 1] + cost);
+            }
+
+            // copy current distance counts to 'previous row' distance counts
+            _d = p;
+            p = d;
+            d = _d;
+        }
+
+        // our last action in the above loop was to switch d and p, so p now
+        // actually has the most recent cost counts
+        return p[n];
     }
 
 }
