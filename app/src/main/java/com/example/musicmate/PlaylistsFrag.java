@@ -100,7 +100,10 @@ public class PlaylistsFrag extends Fragment implements View.OnClickListener {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Playlist playlist = (Playlist) playlists.getItemAtPosition(position);
 
-                Toast.makeText(getActivity(), playlist.getPlaylistID(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(),inPlaylist.class);
+                intent.putExtra("playlist",playlist);
+//                intent.putExtra("playlistID",playlist.getPlaylistID());
+                startActivity(intent);
             }
         });
 

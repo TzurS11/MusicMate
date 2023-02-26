@@ -62,7 +62,7 @@ import rx.android.schedulers.AndroidSchedulers;
  * create an instance of this fragment.
  */
 public class SearchFrag extends Fragment {
-
+    public static Double similarityValue = 0.35;
     private View mView;
     ImageView search;
     EditText query;
@@ -192,7 +192,8 @@ public class SearchFrag extends Fragment {
                         }
                     } else {
 //                        Log.wtf("tag", upload.getname().toLowerCase() + " + " + query.getText().toString().toLowerCase() + " = " + similarity(upload.getname().toLowerCase(), query.getText().toString().toLowerCase()));
-                        if (similarity(upload.getname().toLowerCase().trim(), query.getText().toString().toLowerCase().trim()) >= 0.35 || similarity(upload.getArtist().toLowerCase().trim(), query.getText().toString().toLowerCase().trim()) >= 0.35 && !alreadyIn.contains(upload.getid())) {
+                        Log.wtf("tag",similarityValue.toString());
+                        if (similarity(upload.getname().toLowerCase().trim(), query.getText().toString().toLowerCase().trim()) >= similarityValue || similarity(upload.getArtist().toLowerCase().trim(), query.getText().toString().toLowerCase().trim()) >= similarityValue && !alreadyIn.contains(upload.getid())) {
                             uploadsSongs.add(upload);
                             alreadyIn.add(upload.getid());
                         }
@@ -307,7 +308,7 @@ public class SearchFrag extends Fragment {
     }
 
 
-    public static double similarity(String s1, String s2) {
+    private static double similarity(String s1, String s2) {
         String longer = s1, shorter = s2;
         if (s1.length() < s2.length()) {
             longer = s2;
@@ -321,7 +322,7 @@ public class SearchFrag extends Fragment {
     }
 
 
-    public static int getLevenshteinDistance(String s, String t) {
+    private static int getLevenshteinDistance(String s, String t) {
         if (s == null || t == null) {
             throw new IllegalArgumentException("Strings must not be null");
         }

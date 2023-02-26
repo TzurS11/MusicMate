@@ -19,6 +19,7 @@ public class afterlogin extends AppCompatActivity {
     ActivityAfterloginBinding binding;
     public String currentScreen;
 
+
     Fragment searchFrag = new SearchFrag();
     public Fragment playlistsFrag = new PlaylistsFrag();
     Fragment settingsFrag = new SettingsFrag();
