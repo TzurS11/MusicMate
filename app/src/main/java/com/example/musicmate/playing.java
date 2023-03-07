@@ -35,8 +35,6 @@ public class playing extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing);
-        Toast.makeText(this, MusicPlayer.queue.size() + "", Toast.LENGTH_SHORT).show();
-
 
         actionBar = getSupportActionBar();
         actionBar.hide();
@@ -56,13 +54,11 @@ public class playing extends AppCompatActivity {
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 isHoldingSeekbar = true;
-                Toast.makeText(playing.this, "press", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 isHoldingSeekbar = false;
-                Toast.makeText(playing.this, "release", Toast.LENGTH_SHORT).show();
                 MusicPlayer.player.seekTo(toSeekTime);
             }
         });

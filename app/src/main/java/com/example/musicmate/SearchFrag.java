@@ -452,7 +452,7 @@ public class SearchFrag extends Fragment {
             Uri uri = Uri.parse(songLink);
             Integer expirationDate = Integer.valueOf(uri.getQueryParameter("expire"));
             Date d = new Date(expirationDate);
-            if(d.after(Calendar.getInstance().getTime())){
+            if(d.before(Calendar.getInstance().getTime())){
                 YoutubeJExtractor youtubeJExtractor = new YoutubeJExtractor();
                 VideoPlayerConfig videoData = youtubeJExtractor.extract(song.getid());
                 String dashManifest = videoData.getStreamingData().getAdaptiveAudioStreams().get(0).getUrl();
