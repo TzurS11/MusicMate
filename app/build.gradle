@@ -3,6 +3,11 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+
+
+
+
+
 android {
     namespace 'com.example.musicmate'
     compileSdk 33
@@ -17,6 +22,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
+
+
 
     buildTypes {
         release {
@@ -33,20 +40,31 @@ android {
         viewBinding true
     }
 
-
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
 }
 
+
+
 dependencies {
+    implementation 'com.android.volley:volley:1.2.1'
+    implementation 'com.github.kotvertolet:youtube-jextractor:0.3.4'
+
+    implementation 'com.google.android.exoplayer:exoplayer-dash:2.18.4'
+
+    implementation 'com.google.http-client:google-http-client:1.43.0'
     implementation 'com.jakewharton.rxbinding:rxbinding:0.4.0'
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.3'
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.4'
     implementation 'com.squareup.picasso:picasso:2.8'
-    implementation 'androidx.appcompat:appcompat:1.6.0'
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.firebase:firebase-auth:21.1.0'
-    implementation 'com.google.firebase:firebase-database:20.0.4'
-    implementation 'com.google.firebase:firebase-storage:20.0.1'
+    implementation 'com.google.firebase:firebase-database:20.1.0'
+    implementation 'com.google.firebase:firebase-storage:20.1.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
+

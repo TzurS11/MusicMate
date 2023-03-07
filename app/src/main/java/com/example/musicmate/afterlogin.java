@@ -1,8 +1,10 @@
 package com.example.musicmate;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,13 +13,19 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.musicmate.databinding.ActivityAfterloginBinding;
+import com.github.kotvertolet.youtubejextractor.YoutubeJExtractor;
+import com.github.kotvertolet.youtubejextractor.exception.ExtractionException;
+import com.github.kotvertolet.youtubejextractor.exception.YoutubeRequestException;
+import com.github.kotvertolet.youtubejextractor.models.youtube.videoData.YoutubeVideoData;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 
-public class afterlogin extends AppCompatActivity {
+public class afterlogin extends AppCompatActivity  implements View.OnClickListener{
     ActionBar actionBar;
     ActivityAfterloginBinding binding;
     public String currentScreen;
+
+    public static ImageView goToPlayingActivity;
 
 
     Fragment searchFrag = new SearchFrag();
@@ -29,13 +37,7 @@ public class afterlogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        new MusicPlayer(getApplicationContext());
-//        MediaItem mediaItem = MediaItem.fromUri("https://cdn.discordapp.com/attachments/966001253991735326/1078424589429919906/door.ogg");
-//        MusicPlayer.player.addMediaItem(mediaItem);
-//        MusicPlayer.player.prepare();
-//        MusicPlayer.player.play();
-
-
+        new MusicPlayer(getApplicationContext());
 
         binding = ActivityAfterloginBinding.inflate(getLayoutInflater());
 
@@ -66,7 +68,8 @@ public class afterlogin extends AppCompatActivity {
             return true;
         });
 
-
+        goToPlayingActivity = findViewById(R.id.goToPlayingSong);
+        goToPlayingActivity.setOnClickListener(this);
     }
 
     private void replaceFragment(Fragment frag) {
@@ -76,4 +79,11 @@ public class afterlogin extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    @Override
+    public void onClick(View view) {
+        if(view == goToPlayingActivity){
+            Intent intent = new Intent(afterlogin.this,playing.class);
+            startActivity(intent);
+        }
+    }
 }

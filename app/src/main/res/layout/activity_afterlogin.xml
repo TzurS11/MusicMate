@@ -15,7 +15,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
     </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -30,4 +29,21 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottomnavmenu" />
+
+    <ImageView
+        android:id="@+id/goToPlayingSong"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/playfilled"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        android:layout_marginRight="20px"
+        android:layout_marginBottom="20px"
+        android:visibility="gone"
+        app:tint="@color/primary" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

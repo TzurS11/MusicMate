@@ -45,20 +45,25 @@ public class AllSongsAdapter extends ArrayAdapter<Song> {
         songName.setText(temp.getname());
         songArtist.setText(temp.getArtist());
 
+//        if (temp.getCoverImg() != null) {
+//            FirebaseStorage.getInstance().getReference(temp.getCoverImg()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                @Override
+//                public void onSuccess(Uri uri) {
+//                    Picasso.get().load(uri).placeholder(R.drawable.songplaceholder).error(R.drawable.songplaceholder).into(songCoverImage);
+//                }
+//            }).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    songCoverImage.setImageResource(R.drawable.songplaceholder);
+//                }
+//            });
+//
+//        }else{
+//            songCoverImage.setImageResource(R.drawable.songplaceholder);
+//        }
         if (temp.getCoverImg() != null) {
-            FirebaseStorage.getInstance().getReference(temp.getCoverImg()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Picasso.get().load(uri).placeholder(R.drawable.songplaceholder).error(R.drawable.songplaceholder).into(songCoverImage);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    songCoverImage.setImageResource(R.drawable.songplaceholder);
-                }
-            });
-
-        }else{
+            Picasso.get().load(temp.getCoverImg()).placeholder(R.drawable.songplaceholder).error(R.drawable.songplaceholder).into(songCoverImage);
+        } else {
             songCoverImage.setImageResource(R.drawable.songplaceholder);
         }
 

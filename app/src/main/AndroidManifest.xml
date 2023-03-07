@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MusicMate">
         <activity
+            android:name=".playing"
+            android:exported="false" />
+        <activity
             android:name=".inPlaylist"
             android:exported="false" />
         <activity

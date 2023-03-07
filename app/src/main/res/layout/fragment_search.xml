@@ -14,7 +14,7 @@
         <ListView
             android:id="@+id/songsLV"
             android:layout_width="match_parent"
-            android:layout_height="490dp"
+            android:layout_height="620dp"
             android:background="@drawable/list_border"
             android:divider="#2A000000"
             android:dividerHeight="3dp"
@@ -23,10 +23,10 @@
             android:stackFromBottom="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            app:layout_constraintVertical_bias="0.0"
             tools:layout_conversion_absoluteHeight="548dp"
             tools:layout_conversion_absoluteWidth="291dp" />
 

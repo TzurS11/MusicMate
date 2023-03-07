@@ -3,18 +3,27 @@ package com.example.musicmate;
 import static androidx.core.content.ContextCompat.getSystemService;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
+import android.media.MediaMetadata;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.nfc.Tag;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.os.StrictMode;
+import android.provider.MediaStore;
+import android.support.v4.media.MediaBrowserCompat;
+import android.telecom.Call;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -25,6 +34,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,8 +43,25 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.github.kotvertolet.youtubejextractor.YoutubeJExtractor;
+import com.github.kotvertolet.youtubejextractor.exception.ExtractionException;
+import com.github.kotvertolet.youtubejextractor.exception.VideoIsUnavailable;
+import com.github.kotvertolet.youtubejextractor.exception.YoutubeRequestException;
+import com.github.kotvertolet.youtubejextractor.models.AdaptiveVideoStream;
+import com.github.kotvertolet.youtubejextractor.models.newModels.VideoPlayerConfig;
+import com.github.kotvertolet.youtubejextractor.models.youtube.videoData.YoutubeVideoData;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.metadata.Metadata;
+import com.google.android.exoplayer2.source.dash.manifest.DashManifest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.api.client.json.Json;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,12 +73,24 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -128,11 +167,34 @@ public class SearchFrag extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         mView = inflater.inflate(R.layout.fragment_search, container, false);
         search = mView.findViewById(R.id.searchIV);
         query = mView.findViewById(R.id.queryET);
 
         songs = mView.findViewById(R.id.songsLV);
+
+        songs.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE
+                        && (songs.getLastVisiblePosition() - songs.getHeaderViewsCount() -
+                        songs.getFooterViewsCount()) >= (adapter.getCount() - 1)) {
+
+                    Toast.makeText(getActivity(), "Cant find what you are looking for? Search by url/id", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        });
+
+
+
 
         query.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -147,6 +209,7 @@ public class SearchFrag extends Fragment {
                 return false;
             }
         });
+
         RxTextView.textChanges(query)
                 .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(textChanged -> {
@@ -158,7 +221,15 @@ public class SearchFrag extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Song song = (Song) songs.getItemAtPosition(position);
-                showDialog(song);
+                try {
+                    showDialog(song);
+                } catch (ExtractionException e) {
+//                    throw new RuntimeException(e);
+                } catch (YoutubeRequestException e) {
+//                    throw new RuntimeException(e);
+                } catch (VideoIsUnavailable e) {
+//                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -170,56 +241,111 @@ public class SearchFrag extends Fragment {
         ArrayList<String> alreadyIn = new ArrayList<>();
         if (adapter != null) adapter.clear();
 
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        SongRef = FirebaseDatabase.getInstance().getReference("songs");
-//        Query querySeach = SongRef.orderByChild("name")
-//                .startAt(query.getText().toString().toUpperCase())
-//                .endAt(query.getText().toString().toLowerCase() + "\uf8ff");
-        SongRef.addValueEventListener(new ValueEventListener() {
+        if (query.getText().toString().trim().equals("")) return;
+
+        String URL = "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=" + query.getText().toString() + "&type=video&key=AIzaSyDaey08lNnIvrWby7TaROcjJev3uj5OIXo";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(URL, null, new Response.Listener<JSONObject>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                Log.wtf("tag",String.valueOf(similarity("our painted sky", "our painted sky")));
+            public void onResponse(JSONObject response) {
+//                Toast.makeText(getActivity(), "success in fetching api", Toast.LENGTH_SHORT).show();
+                try {
+                    JSONObject pageInfo = response.getJSONObject("pageInfo");
+                    JSONArray items = response.getJSONArray("items");
+                    for (int i = 0; i < items.length(); i++) {
+                        Song song = new Song();
 
-                if (adapter != null) adapter.clear();
-                songs.setVisibility(View.VISIBLE);
+                        JSONObject video = items.getJSONObject(i);
+                        JSONObject snippet = video.getJSONObject("snippet");
+                        JSONObject id = video.getJSONObject("id");
 
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    Song upload = postSnapshot.getValue(Song.class);
+                        song.setid(id.getString("videoId"));
+                        song.setArtist(snippet.getString("channelTitle"));
+                        song.setname(snippet.getString("title").trim());
+                        song.setDownloadUrl("https://www.youtube.com/watch?v=" + song.getid());
+                        song.setCoverImg(snippet.getJSONObject("thumbnails").getJSONObject("medium").getString("url"));
 
-                    if (query.getText().toString().trim().equals("")) {
-                        if (uploadsSongs.size() < 20 && Math.round(Math.random() * 20) == 10) {
-                            uploadsSongs.add(upload);
+
+                        if (!alreadyIn.contains(song.getid())) {
+                            alreadyIn.add(song.getid());
+                            uploadsSongs.add(song);
                         }
-                    } else {
-//                        Log.wtf("tag", upload.getname().toLowerCase() + " + " + query.getText().toString().toLowerCase() + " = " + similarity(upload.getname().toLowerCase(), query.getText().toString().toLowerCase()));
-                        Log.wtf("tag",similarityValue.toString());
-                        if (similarity(upload.getname().toLowerCase().trim(), query.getText().toString().toLowerCase().trim()) >= similarityValue || similarity(upload.getArtist().toLowerCase().trim(), query.getText().toString().toLowerCase().trim()) >= similarityValue && !alreadyIn.contains(upload.getid())) {
-                            uploadsSongs.add(upload);
-                            alreadyIn.add(upload.getid());
-                        }
-//                        String[] querySplit = query.getText().toString().split(" ");
-//                        for (int i = 0; i < querySplit.length; i++) {
-//                            if ((upload.getname().toLowerCase().contains(querySplit[i].toLowerCase()) || upload.getArtist().toLowerCase().contains(querySplit[i].toLowerCase())) && !alreadyIn.contains(upload.getid())) {
-//                                uploadsSongs.add(upload);
-//                                alreadyIn.add(upload.getid());
-//                            }
-//                        }
+
+
                     }
 
-                }
 
+//                    Toast.makeText(getActivity(), , Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                Toast.makeText(getActivity(), uploadsSongs.size() + "", Toast.LENGTH_SHORT).show();
                 adapter = new AllSongsAdapter(mView.getContext().getApplicationContext(), 1, uploadsSongs);
                 songs.setAdapter(adapter);
             }
-
+        }, new Response.ErrorListener() {
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), "error in fetching api", Toast.LENGTH_SHORT).show();
             }
         });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(requireActivity());
+        requestQueue.add(jsonObjectRequest);
+
+
+        //
+//        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//        SongRef = FirebaseDatabase.getInstance().getReference("songs");
+////        Query querySeach = SongRef.orderByChild("name")
+////                .startAt(query.getText().toString().toUpperCase())
+////                .endAt(query.getText().toString().toLowerCase() + "\uf8ff");
+//        SongRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+////                Log.wtf("tag",String.valueOf(similarity("our painted sky", "our painted sky")));
+//
+//                if (adapter != null) adapter.clear();
+//                songs.setVisibility(View.VISIBLE);
+//
+//                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+//                    Song upload = postSnapshot.getValue(Song.class);
+//
+//                    if (query.getText().toString().trim().equals("")) {
+//                        if (uploadsSongs.size() < 20 && Math.round(Math.random() * 20) == 10) {
+//                            uploadsSongs.add(upload);
+//                        }
+//                    } else {
+////                        Log.wtf("tag", upload.getname().toLowerCase() + " + " + query.getText().toString().toLowerCase() + " = " + similarity(upload.getname().toLowerCase(), query.getText().toString().toLowerCase()));
+//                        Log.wtf("tag",similarityValue.toString());
+//                        if (similarity(upload.getname().toLowerCase().trim(), query.getText().toString().toLowerCase().trim()) >= similarityValue || similarity(upload.getArtist().toLowerCase().trim(), query.getText().toString().toLowerCase().trim()) >= similarityValue && !alreadyIn.contains(upload.getid())) {
+//                            uploadsSongs.add(upload);
+//                            alreadyIn.add(upload.getid());
+//                        }
+////                        String[] querySplit = query.getText().toString().split(" ");
+////                        for (int i = 0; i < querySplit.length; i++) {
+////                            if ((upload.getname().toLowerCase().contains(querySplit[i].toLowerCase()) || upload.getArtist().toLowerCase().contains(querySplit[i].toLowerCase())) && !alreadyIn.contains(upload.getid())) {
+////                                uploadsSongs.add(upload);
+////                                alreadyIn.add(upload.getid());
+////                            }
+////                        }
+//                    }
+//
+//                }
+//
+
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
     }
 
-    public void showDialog(Song song) {
+    public void showDialog(Song song) throws ExtractionException, YoutubeRequestException, VideoIsUnavailable {
+        ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Loading ...Please Wait");
+        progressDialog.show();
         Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.addsongdialog);
         ListView playlists = dialog.findViewById(R.id.playlistSelect);
@@ -288,23 +414,69 @@ public class SearchFrag extends Fragment {
         songArtistPreview.setText(song.getArtist());
         songArtistPreview.setSelected(true);
 
+//        if (song.getCoverImg() != null) {
+//            FirebaseStorage.getInstance().getReference(song.getCoverImg()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                @Override
+//                public void onSuccess(Uri uri) {
+//                    Picasso.get().load(uri).placeholder(R.drawable.songplaceholder).error(R.drawable.songplaceholder).into(songCoverPreview);
+//                }
+//            }).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    songCoverPreview.setImageResource(R.drawable.songplaceholder);
+//                }
+//            });
+//        }
+
         if (song.getCoverImg() != null) {
-            FirebaseStorage.getInstance().getReference(song.getCoverImg()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Picasso.get().load(uri).placeholder(R.drawable.songplaceholder).error(R.drawable.songplaceholder).into(songCoverPreview);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    songCoverPreview.setImageResource(R.drawable.songplaceholder);
-                }
-            });
+            Picasso.get().load(song.getCoverImg()).placeholder(R.drawable.songplaceholder).error(R.drawable.songplaceholder).into(songCoverPreview);
+        } else {
+            songCoverPreview.setImageResource(R.drawable.songplaceholder);
         }
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().setAttributes(lp);
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("videoUrls", Context.MODE_PRIVATE);
+
+        if (!sharedPreferences.contains(song.getid())) {
+            YoutubeJExtractor youtubeJExtractor = new YoutubeJExtractor();
+            VideoPlayerConfig videoData = youtubeJExtractor.extract(song.getid());
+            String dashManifest = videoData.getStreamingData().getAdaptiveAudioStreams().get(0).getUrl();
+            song.setDownloadUrl(dashManifest);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(song.getid(), dashManifest);
+            editor.commit();
+        } else {
+            String songLink = sharedPreferences.getString(song.getid(), null);
+            Uri uri = Uri.parse(songLink);
+            Integer expirationDate = Integer.valueOf(uri.getQueryParameter("expire"));
+            Date d = new Date(expirationDate);
+            if(d.after(Calendar.getInstance().getTime())){
+                YoutubeJExtractor youtubeJExtractor = new YoutubeJExtractor();
+                VideoPlayerConfig videoData = youtubeJExtractor.extract(song.getid());
+                String dashManifest = videoData.getStreamingData().getAdaptiveAudioStreams().get(0).getUrl();
+                song.setDownloadUrl(dashManifest);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(song.getid(), dashManifest);
+                editor.commit();
+            }else{
+                song.setDownloadUrl(sharedPreferences.getString(song.getid(), null));
+            }
+        }
+
+
+        ImageView playSong = dialog.findViewById(R.id.playSongButton);
+        playSong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MusicPlayer.playAndOverride(MediaItem.fromUri(song.getDownloadUrl()), song);
+                Log.wtf("tag",song.getDownloadUrl());
+                dialog.dismiss();
+            }
+        });
         dialog.show();
+        progressDialog.dismiss();
     }
 
 
@@ -381,5 +553,5 @@ public class SearchFrag extends Fragment {
         // actually has the most recent cost counts
         return p[n];
     }
-
 }
+

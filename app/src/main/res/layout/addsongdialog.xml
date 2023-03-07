@@ -32,10 +32,11 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/opacitychange" />
 
+
     <ListView
         android:id="@+id/playlistSelect"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="470dp"
         android:background="@drawable/list_border"
         android:divider="#2A000000"
         android:dividerHeight="3dp"
@@ -44,16 +45,15 @@
         android:stackFromBottom="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/playSongButton"
+        app:layout_constraintVertical_bias="1.0"
         tools:layout_conversion_absoluteHeight="548dp"
         tools:layout_conversion_absoluteWidth="291dp">
 
 
     </ListView>
-
 
     <TextView
         android:id="@+id/songNamePreview"
@@ -86,15 +86,15 @@
         android:autoSizeTextType="uniform"
         android:ellipsize="end"
         android:fontFamily="@font/amiko"
-        android:maxLines="1"
         android:gravity="top|left"
+        android:maxLines="1"
         android:paddingLeft="20px"
         android:paddingRight="20px"
-        android:text="dafsdaf"
         android:shadowColor="@color/black"
-        android:shadowRadius="10"
         android:shadowDx="2"
         android:shadowDy="2"
+        android:shadowRadius="10"
+        android:text="dafsdaf"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -102,6 +102,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/songNamePreview"
         app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/playSongButton"
+        android:layout_width="200px"
+        android:layout_height="270px"
+        android:paddingBottom="70px"
+        android:layout_marginTop="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.047"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/songArtistPreview"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/play"
+        app:tint="@color/primary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
