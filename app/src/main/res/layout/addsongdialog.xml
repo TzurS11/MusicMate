@@ -36,7 +36,7 @@
     <ListView
         android:id="@+id/playlistSelect"
         android:layout_width="match_parent"
-        android:layout_height="470dp"
+        android:layout_height="1100px"
         android:background="@drawable/list_border"
         android:divider="#2A000000"
         android:dividerHeight="3dp"
@@ -51,8 +51,6 @@
         app:layout_constraintVertical_bias="1.0"
         tools:layout_conversion_absoluteHeight="548dp"
         tools:layout_conversion_absoluteWidth="291dp">
-
-
     </ListView>
 
     <TextView
@@ -70,7 +68,7 @@
         android:shadowDx="2"
         android:shadowDy="2"
         android:gravity="bottom|left"
-        android:text="fasdfasdf"
+        android:text="name placeholder"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +92,7 @@
         android:shadowDx="2"
         android:shadowDy="2"
         android:shadowRadius="10"
-        android:text="dafsdaf"
+        android:text="author placeholder"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -106,12 +104,10 @@
     <ImageView
         android:id="@+id/playSongButton"
         android:layout_width="200px"
-        android:layout_height="270px"
-        android:paddingBottom="70px"
-        android:layout_marginTop="30dp"
+        android:layout_height="200px"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.047"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/songArtistPreview"
         app:layout_constraintVertical_bias="0.0"

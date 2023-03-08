@@ -35,7 +35,7 @@
     <ListView
         android:id="@+id/songsLV"
         android:layout_width="match_parent"
-        android:layout_height="454dp"
+        android:layout_height="1100px"
         android:background="@drawable/list_border"
         android:divider="#2A000000"
         android:dividerHeight="3dp"
@@ -46,7 +46,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playSongButton"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
         tools:layout_conversion_absoluteHeight="548dp"
         tools:layout_conversion_absoluteWidth="291dp" />
@@ -102,12 +102,10 @@
     <ImageView
         android:id="@+id/playSongButton"
         android:layout_width="200px"
-        android:layout_height="270px"
-        android:paddingBottom="70px"
-        android:layout_marginTop="30dp"
+        android:layout_height="200px"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.047"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/playlistAuthor"
         app:layout_constraintVertical_bias="0.0"

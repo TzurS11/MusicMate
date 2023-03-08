@@ -170,7 +170,7 @@ public class inPlaylist extends AppCompatActivity implements View.OnClickListene
         if (view == playPlaylist) {
             MusicPlayer.setQueue(uploadsSongs);
             try {
-                MusicPlayer.playFromUrlFromQueue(getApplicationContext());
+                MusicPlayer.playFromUrlFromQueue();
             } catch (ExtractionException e) {
                 throw new RuntimeException(e);
             } catch (YoutubeRequestException e) {

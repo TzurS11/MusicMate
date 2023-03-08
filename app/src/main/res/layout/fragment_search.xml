@@ -11,10 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <ListView
             android:id="@+id/songsLV"
             android:layout_width="match_parent"
-            android:layout_height="620dp"
+            android:layout_height="1410px"
             android:background="@drawable/list_border"
             android:divider="#2A000000"
             android:dividerHeight="3dp"
@@ -23,46 +24,22 @@
             android:stackFromBottom="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView"
-            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintTop_toBottomOf="@+id/queryET"
+            app:layout_constraintVertical_bias="1.0"
             tools:layout_conversion_absoluteHeight="548dp"
             tools:layout_conversion_absoluteWidth="291dp" />
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="439dp"
-            android:layout_height="124dp"
-            android:src="@drawable/backgroundcolor"
-            app:layout_constraintBottom_toBottomOf="@+id/queryET"
-            app:layout_constraintEnd_toEndOf="@+id/queryET"
-            app:layout_constraintHorizontal_bias="0.492"
-            app:layout_constraintStart_toStartOf="@+id/queryET"
-            app:layout_constraintTop_toTopOf="@+id/queryET"
-            app:layout_constraintVertical_bias="0.66" />
-
-        <ImageView
-            android:id="@+id/searchIV"
-            android:layout_width="43dp"
-            android:layout_height="43dp"
-            android:src="@drawable/search"
-            app:layout_constraintBottom_toBottomOf="@+id/queryET"
-            app:layout_constraintEnd_toEndOf="@+id/queryET"
-            app:layout_constraintHorizontal_bias="0.985"
-            app:layout_constraintStart_toStartOf="@+id/queryET"
-            app:layout_constraintTop_toTopOf="@+id/queryET"
-            app:tint="@color/white" />
-
         <EditText
             android:id="@+id/queryET"
-            android:layout_width="297dp"
-            android:layout_height="49dp"
+            android:layout_width="900px"
+            android:layout_height="170px"
             android:background="@drawable/edit_text"
             android:ems="10"
             android:hint="SEARCH"
             android:inputType="textPersonName"
-            android:paddingLeft="15dp"
+            android:paddingLeft="40px"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textSize="17dp"

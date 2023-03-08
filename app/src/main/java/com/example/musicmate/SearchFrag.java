@@ -1,42 +1,25 @@
 package com.example.musicmate;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.MediaMetadata;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.nfc.Tag;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.os.StrictMode;
-import android.provider.MediaStore;
-import android.support.v4.media.MediaBrowserCompat;
-import android.telecom.Call;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.KeyboardShortcutGroup;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -48,49 +31,23 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.github.kotvertolet.youtubejextractor.YoutubeJExtractor;
 import com.github.kotvertolet.youtubejextractor.exception.ExtractionException;
 import com.github.kotvertolet.youtubejextractor.exception.VideoIsUnavailable;
 import com.github.kotvertolet.youtubejextractor.exception.YoutubeRequestException;
-import com.github.kotvertolet.youtubejextractor.models.AdaptiveVideoStream;
-import com.github.kotvertolet.youtubejextractor.models.newModels.VideoPlayerConfig;
-import com.github.kotvertolet.youtubejextractor.models.youtube.videoData.YoutubeVideoData;
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.metadata.Metadata;
-import com.google.android.exoplayer2.source.dash.manifest.DashManifest;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.api.client.json.Json;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -103,7 +60,6 @@ import rx.android.schedulers.AndroidSchedulers;
 public class SearchFrag extends Fragment {
     public static Double similarityValue = 0.35;
     private View mView;
-    ImageView search;
     EditText query;
 
     ListView songs;
@@ -170,7 +126,6 @@ public class SearchFrag extends Fragment {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         mView = inflater.inflate(R.layout.fragment_search, container, false);
-        search = mView.findViewById(R.id.searchIV);
         query = mView.findViewById(R.id.queryET);
 
         songs = mView.findViewById(R.id.songsLV);
@@ -192,8 +147,6 @@ public class SearchFrag extends Fragment {
 
             }
         });
-
-
 
 
         query.setOnKeyListener(new View.OnKeyListener() {
@@ -289,8 +242,12 @@ public class SearchFrag extends Fragment {
             }
         });
 
-        RequestQueue requestQueue = Volley.newRequestQueue(requireActivity());
-        requestQueue.add(jsonObjectRequest);
+        if(afterlogin.currentScreen == "search"){
+            RequestQueue requestQueue = Volley.newRequestQueue(requireActivity());
+            requestQueue.add(jsonObjectRequest);
+        }
+
+
 
 
         //
@@ -437,41 +394,50 @@ public class SearchFrag extends Fragment {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().setAttributes(lp);
 
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("videoUrls", Context.MODE_PRIVATE);
-
-        if (!sharedPreferences.contains(song.getid())) {
-            YoutubeJExtractor youtubeJExtractor = new YoutubeJExtractor();
-            VideoPlayerConfig videoData = youtubeJExtractor.extract(song.getid());
-            String dashManifest = videoData.getStreamingData().getAdaptiveAudioStreams().get(0).getUrl();
-            song.setDownloadUrl(dashManifest);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(song.getid(), dashManifest);
-            editor.commit();
-        } else {
-            String songLink = sharedPreferences.getString(song.getid(), null);
-            Uri uri = Uri.parse(songLink);
-            Integer expirationDate = Integer.valueOf(uri.getQueryParameter("expire"));
-            Date d = new Date(expirationDate);
-            if(d.before(Calendar.getInstance().getTime())){
-                YoutubeJExtractor youtubeJExtractor = new YoutubeJExtractor();
-                VideoPlayerConfig videoData = youtubeJExtractor.extract(song.getid());
-                String dashManifest = videoData.getStreamingData().getAdaptiveAudioStreams().get(0).getUrl();
-                song.setDownloadUrl(dashManifest);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(song.getid(), dashManifest);
-                editor.commit();
-            }else{
-                song.setDownloadUrl(sharedPreferences.getString(song.getid(), null));
-            }
-        }
+//        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("videoUrls", Context.MODE_PRIVATE);
+//
+//        if (!sharedPreferences.contains(song.getid())) {
+//            YoutubeJExtractor youtubeJExtractor = new YoutubeJExtractor();
+//            VideoPlayerConfig videoData = youtubeJExtractor.extract(song.getid());
+//            String dashManifest = videoData.getStreamingData().getAdaptiveAudioStreams().get(0).getUrl();
+//            song.setDownloadUrl(dashManifest);
+//            SharedPreferences.Editor editor = sharedPreferences.edit();
+//            editor.putString(song.getid(), dashManifest);
+//            editor.commit();
+//        } else {
+//            String songLink = sharedPreferences.getString(song.getid(), null);
+//            Uri uri = Uri.parse(songLink);
+//            Integer expirationDate = Integer.valueOf(uri.getQueryParameter("expire"));
+//            Date d = new Date(expirationDate);
+//            if (d.before(Calendar.getInstance().getTime())) {
+//                YoutubeJExtractor youtubeJExtractor = new YoutubeJExtractor();
+//                VideoPlayerConfig videoData = youtubeJExtractor.extract(song.getid());
+//                String dashManifest = videoData.getStreamingData().getAdaptiveAudioStreams().get(0).getUrl();
+//                song.setDownloadUrl(dashManifest);
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//                editor.putString(song.getid(), dashManifest);
+//                editor.commit();
+//            } else {
+//                song.setDownloadUrl(sharedPreferences.getString(song.getid(), null));
+//            }
+//        }
 
 
         ImageView playSong = dialog.findViewById(R.id.playSongButton);
         playSong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MusicPlayer.playAndOverride(MediaItem.fromUri(song.getDownloadUrl()), song);
-                Log.wtf("tag",song.getDownloadUrl());
+                MusicPlayer.currentSong = song;
+                try {
+                    MusicPlayer.playFromUrlFromQueue();
+                } catch (ExtractionException e) {
+                    throw new RuntimeException(e);
+                } catch (YoutubeRequestException e) {
+                    throw new RuntimeException(e);
+                } catch (VideoIsUnavailable e) {
+                    throw new RuntimeException(e);
+                }
+                Log.wtf("tag", song.getDownloadUrl());
                 dialog.dismiss();
             }
         });

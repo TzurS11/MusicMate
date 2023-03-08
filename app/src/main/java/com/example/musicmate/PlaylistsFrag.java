@@ -92,7 +92,6 @@ public class PlaylistsFrag extends Fragment implements View.OnClickListener {
         createPlaylist = mView.findViewById(R.id.createPlaylistBtn);
         createPlaylist.setOnClickListener(this);
         playlists = mView.findViewById(R.id.playlists);
-        playlists.setVisibility(View.INVISIBLE);
         retriveData();
         playlists.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -121,7 +120,6 @@ public class PlaylistsFrag extends Fragment implements View.OnClickListener {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 if (adapter != null) adapter.clear();
-                playlists.setVisibility(View.VISIBLE);
 
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Playlist upload = postSnapshot.getValue(Playlist.class);
