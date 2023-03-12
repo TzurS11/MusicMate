@@ -29,7 +29,7 @@ public class createNotification {
     public static final String ACTION_PLAY = "actionplay";
     public static final String ACTION_NEXT = "actionnext";
 
-    public static Notification notification;
+    public static NotificationCompat.Builder notification;
 
     public static void destroyNotification(Context context) {
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
@@ -68,21 +68,50 @@ public class createNotification {
                         .setSmallIcon(IconCompat.createWithBitmap(appIconBitmap))
                         .setOnlyAlertOnce(true)
                         .setShowWhen(false)
-                        .addAction(new NotificationCompat.Action(R.drawable.nextpassbackwards, "Previous", pendingIntentPrevious))
-                        .addAction(new NotificationCompat.Action(playbutton, "Play / Pause", pendingIntentPlayPause))
-                        .addAction(new NotificationCompat.Action(R.drawable.nextpast, "Next", pendingIntentNext))
                         .setOngoing(true)
                         .setColorized(true)
                         .setSilent(true)
                         .setColor(Color.rgb(255, 81, 0))
-                        .setPriority(NotificationCompat.PRIORITY_LOW)
-                        .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                        .setPriority(NotificationCompat.PRIORITY_LOW);
+                Integer available = 0;
+                if (MusicPlayer.recentlyPlayedSongs.size() > 0) {
+                    available++;
+                    notification.addAction(new NotificationCompat.Action(R.drawable.nextpassbackwards, "Previous", pendingIntentPrevious));
+                }
+                notification.addAction(new NotificationCompat.Action(playbutton, "Play / Pause", pendingIntentPlayPause));
+                available++;
+                if (MusicPlayer.queue.size() > 0) {
+                    notification.addAction(new NotificationCompat.Action(R.drawable.nextpast, "Next", pendingIntentNext));
+                    available++;
+                }
+
+                switch (available){
+                    case 1:
+                        notification.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                                .setShowActionsInCompactView(0)
+                                .setMediaSession(mediaSessionCompat.getSessionToken()));
+                        break;
+                    case 2:
+                        notification.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                                .setShowActionsInCompactView(0, 1)
+                                .setMediaSession(mediaSessionCompat.getSessionToken()));
+                        break;
+                    case 3:
+                        notification.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                                 .setShowActionsInCompactView(0, 1, 2)
-                                .setMediaSession(mediaSessionCompat.getSessionToken()))
-                        .build();
+                                .setMediaSession(mediaSessionCompat.getSessionToken()));
+                        break;
+                    default:
+                        notification.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                                .setShowActionsInCompactView(0)
+                                .setMediaSession(mediaSessionCompat.getSessionToken()));
+                        break;
+                }
 
 
-                notificationManagerCompat.notify(NOTIFICATION_ID, notification);
+
+                Notification builtNotification = notification.build();
+                notificationManagerCompat.notify(NOTIFICATION_ID, builtNotification);
 
 
             } catch (IOException e) {

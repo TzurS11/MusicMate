@@ -4,13 +4,22 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,9 +60,9 @@ public class inPlaylist extends AppCompatActivity implements View.OnClickListene
     ImageView playlistBackgroundImg;
     ArrayList<String> songs = null;
 
-
     ArrayList<Song> uploadsSongs;
     AllSongsAdapter adapter;
+    AllPlaylistsAdapter playlistsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +84,20 @@ public class inPlaylist extends AppCompatActivity implements View.OnClickListene
         songs = playlist.getSongs();
         setPlaylistInfo(playlist);
 
-        songsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//        songsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+//                Song song = (Song) songsLV.getItemAtPosition(position);
+//                Toast.makeText(inPlaylist.this, song.getArtist(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+        songsLV.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Song song = (Song) songsLV.getItemAtPosition(position);
-                Toast.makeText(inPlaylist.this, song.getArtist(), Toast.LENGTH_SHORT).show();
+                showLongClickDialog(song);
+//                Toast.makeText(inPlaylist.this, song.getname(), Toast.LENGTH_SHORT).show();
+                return true;
             }
         });
 
@@ -87,6 +105,198 @@ public class inPlaylist extends AppCompatActivity implements View.OnClickListene
 
 //        Toast.makeText(this, songs.toString(), Toast.LENGTH_SHORT).show();
 
+    }
+
+
+    public void showLongClickDialog(Song song) {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.selectedsong);
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.BOTTOM;
+        dialog.getWindow().setAttributes(lp);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+
+        LinearLayout gotoSong = dialog.findViewById(R.id.gotoSongLayout);
+
+        gotoSong.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(getResources().getColor(R.color.primary));
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(getResources().getColor(R.color.accent));
+                        break;
+                }
+                return false;
+            }
+        });
+        gotoSong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                try {
+                    gotoSongDialog(song);
+                } catch (ExtractionException e) {
+                    throw new RuntimeException(e);
+                } catch (YoutubeRequestException e) {
+                    throw new RuntimeException(e);
+                } catch (VideoIsUnavailable e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        LinearLayout removeSong = dialog.findViewById(R.id.removeSongLayout);
+        removeSong.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.setBackgroundColor(getResources().getColor(R.color.primary));
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        v.setBackgroundColor(getResources().getColor(R.color.accent));
+                        break;
+                }
+                return false;
+            }
+        });
+
+        removeSong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playlist.deleteSong(song.getid());
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                PlaylistRef = FirebaseDatabase
+                        .getInstance()
+                        .getReference("Playlist")
+                        .child(uid)
+                        .child(playlist.getPlaylistID());
+                PlaylistRef.setValue(playlist);
+                dialog.dismiss();
+                retriveData();
+                Toast.makeText(inPlaylist.this, "Removed song", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        dialog.show();
+    }
+
+
+    public void gotoSongDialog(Song song) throws ExtractionException, YoutubeRequestException, VideoIsUnavailable {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading ...Please Wait");
+        progressDialog.show();
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.addsongdialog);
+        ListView playlists = dialog.findViewById(R.id.playlistSelect);
+
+        playlists.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Playlist playlist = (Playlist) playlists.getItemAtPosition(position);
+                if (!playlist.addSong(song.getid())) {
+                    Toast.makeText(inPlaylist.this, "Song already exists in the playlist", Toast.LENGTH_SHORT).show();
+                } else {
+                    DatabaseReference PlaylistRef = FirebaseDatabase.getInstance().getReference("Playlist");
+                    PlaylistRef.child(playlist.getUserID()).child(playlist.getPlaylistID()).setValue(playlist);
+                    dialog.dismiss();
+                }
+            }
+        });
+
+
+        ArrayList<Playlist> uploadsPlaylists = new ArrayList<>();
+        if (playlistsAdapter != null) playlistsAdapter.clear();
+
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference PlaylistRef = FirebaseDatabase.getInstance().getReference("Playlist").child(uid);
+        PlaylistRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if (playlistsAdapter != null) playlistsAdapter.clear();
+                playlists.setVisibility(View.VISIBLE);
+
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Playlist upload = postSnapshot.getValue(Playlist.class);
+                    if (!upload.getSongs().contains(song.getid())) {
+                        uploadsPlaylists.add(upload);
+                    }
+                }
+                if (uploadsPlaylists.size() >= 8) {
+                    playlists.setStackFromBottom(false);
+                } else {
+                    playlists.setStackFromBottom(true);
+                }
+                playlistsAdapter = new AllPlaylistsAdapter(getApplicationContext(), 1, uploadsPlaylists);
+                playlists.setAdapter(playlistsAdapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+
+        });
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        ImageView songCoverPreview = dialog.findViewById(R.id.coverImgPreview);
+        TextView songTitlePreview = dialog.findViewById(R.id.songNamePreview);
+        TextView songArtistPreview = dialog.findViewById(R.id.songArtistPreview);
+        songTitlePreview.setText(song.getname());
+        songTitlePreview.setSelected(true);
+        songArtistPreview.setText(song.getArtist());
+        songArtistPreview.setSelected(true);
+
+
+        if (song.getCoverImg() != null) {
+            Picasso.get().load(song.getCoverImg()).placeholder(R.drawable.songplaceholder).error(R.drawable.songplaceholder).into(songCoverPreview);
+        } else {
+            songCoverPreview.setImageResource(R.drawable.songplaceholder);
+        }
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().setAttributes(lp);
+
+
+        ImageView playSong = dialog.findViewById(R.id.playSongButton);
+        playSong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MusicPlayer.currentSong = song;
+                try {
+                    MusicPlayer.playFromUrlFromQueue();
+                } catch (ExtractionException e) {
+                    throw new RuntimeException(e);
+                } catch (YoutubeRequestException e) {
+                    throw new RuntimeException(e);
+                } catch (VideoIsUnavailable e) {
+                    throw new RuntimeException(e);
+                }
+                Log.wtf("tag", song.getDownloadUrl());
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+        progressDialog.dismiss();
     }
 
     private void setPlaylistInfo(Playlist playlist) {
