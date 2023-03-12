@@ -27,13 +27,20 @@ import com.github.kotvertolet.youtubejextractor.exception.ExtractionException;
 import com.github.kotvertolet.youtubejextractor.exception.VideoIsUnavailable;
 import com.github.kotvertolet.youtubejextractor.exception.YoutubeRequestException;
 import com.github.kotvertolet.youtubejextractor.models.newModels.VideoPlayerConfig;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.audio.AudioAttributes;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerNotificationManager;
+import com.google.android.exoplayer2.upstream.DefaultAllocator;
 
 import java.io.IOException;
 import java.net.URL;
@@ -57,10 +64,29 @@ public class MusicPlayer extends AppCompatActivity {
         applicationContext = context.getApplicationContext();
         queue = new ArrayList<>();
         recentlyPlayedSongs = new ArrayList<>();
+
+
+        int MIN_BUFFER_DURATION = 3000; // 3 seconds
+        int MAX_BUFFER_DURATION = 3000; // 3 seconds
+        int MIN_PLAYBACK_RESUME_BUFFER = 1500; // 1.5 seconds
+        int MIN_PLAYBACK_START_BUFFER = 500; // 0.5 seconds
+        LoadControl loadControl = new DefaultLoadControl.Builder().setAllocator(new DefaultAllocator(true, 16)).setBufferDurationsMs(MIN_BUFFER_DURATION, MAX_BUFFER_DURATION, MIN_PLAYBACK_START_BUFFER, MIN_PLAYBACK_RESUME_BUFFER).setTargetBufferBytes(-1).setPrioritizeTimeOverSizeThresholds(true).createDefaultLoadControl();
+
+
         player = new ExoPlayer.Builder(applicationContext).setLooper(Looper.myLooper()).setAudioAttributes(AudioAttributes.DEFAULT, true).build();
+
         player.addListener(new Player.Listener() {
             @Override
             public void onIsPlayingChanged(boolean isPlaying) {
+                if (player.isPlaying()) {
+                    createNotification.createNotification(applicationContext, currentSong, R.drawable.pausefilled, 1, queue.size());
+                } else {
+                    createNotification.createNotification(applicationContext, currentSong, R.drawable.playfilled, 1, queue.size());
+                }
+                if (queue.size() == 0 && player.getPlaybackState() == Player.STATE_ENDED) {
+                    createNotification.destroyNotification(applicationContext);
+                }
+
                 Player.Listener.super.onIsPlayingChanged(isPlaying);
                 if (player.getMediaItemCount() != 0) {
                     afterlogin.goToPlayingActivity.setVisibility(View.VISIBLE);
@@ -79,7 +105,9 @@ public class MusicPlayer extends AppCompatActivity {
                 Player.Listener.super.onPlaybackStateChanged(playbackState);
 
                 if (playbackState == Player.STATE_ENDED) {
-                    recentlyPlayedSongs.add(currentSong);
+                    if (queue.size() != 0) {
+                        recentlyPlayedSongs.add(currentSong);
+                    }
                     if (queue.size() > 0) {
                         try {
                             currentSong = MusicPlayer.queue.remove(0);
@@ -96,14 +124,26 @@ public class MusicPlayer extends AppCompatActivity {
                         player.removeListener(this);
                     }
                 }
-            }
-        });
-        player.addListener(new Player.Listener() {
-            @Override
-            public void onPlaybackStateChanged(int playbackState) {
-                Player.Listener.super.onPlaybackStateChanged(playbackState);
+
                 if (playbackState == Player.STATE_READY) {
-                    createNotification.createNotification(applicationContext, currentSong, R.drawable.playfilled, 1, queue.size());
+                    if (playing.isCreated) {
+                        playing.changeDetailsFromMusicPlayer();
+                        playing.isHoldingSeekbar = false;
+                        if (MusicPlayer.queue.size() == 0) {
+                            playing.controlNext.setAlpha(0.3f);
+                            playing.controlNext.setEnabled(false);
+                        } else {
+                            playing.controlNext.setAlpha(1f);
+                            playing.controlNext.setEnabled(true);
+                        }
+                        if (MusicPlayer.recentlyPlayedSongs.size() == 0) {
+                            playing.controlPast.setAlpha(0.3f);
+                            playing.controlPast.setEnabled(false);
+                        } else {
+                            playing.controlPast.setAlpha(1f);
+                            playing.controlPast.setEnabled(true);
+                        }
+                    }
                 }
             }
         });
@@ -158,33 +198,6 @@ public class MusicPlayer extends AppCompatActivity {
 
     public static void playFromUrlFromQueue() throws ExtractionException, YoutubeRequestException, VideoIsUnavailable {
         new FetchStreamableUrlTask().execute();
-//        YoutubeJExtractor youtubeJExtractor = new YoutubeJExtractor();
-//        VideoPlayerConfig videoData = youtubeJExtractor.extract(currentSong.getid());
-//        String dashManifest = Objects.requireNonNull(videoData.getStreamingData()).getAdaptiveAudioStreams().get(0).getUrl();
-//        currentSong.setDownloadUrl(dashManifest);
-//        Log.wtf("tag", currentSong.getDownloadUrl());
-//        player.setMediaItem(MediaItem.fromUri(currentSong.getDownloadUrl()));
-//        player.prepare();
-////        player.play();
-//        if (playing.isCreated) {
-//            playing.changeDetailsFromMusicPlayer();
-//            playing.isHoldingSeekbar = false;
-//            if (MusicPlayer.queue.size() == 0) {
-//                playing.controlNext.setAlpha(0.3f);
-//                playing.controlNext.setEnabled(false);
-//            } else {
-//                playing.controlNext.setAlpha(1f);
-//                playing.controlNext.setEnabled(true);
-//            }
-//            if (MusicPlayer.recentlyPlayedSongs.size() == 0) {
-//                playing.controlPast.setAlpha(0.3f);
-//                playing.controlPast.setEnabled(false);
-//            } else {
-//                playing.controlPast.setAlpha(1f);
-//                playing.controlPast.setEnabled(true);
-//            }
-//        }
-
     }
 
     private static class FetchStreamableUrlTask extends AsyncTask<String, Void, String> {
@@ -206,27 +219,11 @@ public class MusicPlayer extends AppCompatActivity {
         protected void onPostExecute(String streamableUrl) {
             // update the UI with the streamable url
             if (streamableUrl != null) {
+                 
                 player.setMediaItem(MediaItem.fromUri(currentSong.getDownloadUrl()));
                 player.prepare();
 //        player.play();
-                if (playing.isCreated) {
-                    playing.changeDetailsFromMusicPlayer();
-                    playing.isHoldingSeekbar = false;
-                    if (MusicPlayer.queue.size() == 0) {
-                        playing.controlNext.setAlpha(0.3f);
-                        playing.controlNext.setEnabled(false);
-                    } else {
-                        playing.controlNext.setAlpha(1f);
-                        playing.controlNext.setEnabled(true);
-                    }
-                    if (MusicPlayer.recentlyPlayedSongs.size() == 0) {
-                        playing.controlPast.setAlpha(0.3f);
-                        playing.controlPast.setEnabled(false);
-                    } else {
-                        playing.controlPast.setAlpha(1f);
-                        playing.controlPast.setEnabled(true);
-                    }
-                }
+
             } else {
                 // handle the error
                 // ...

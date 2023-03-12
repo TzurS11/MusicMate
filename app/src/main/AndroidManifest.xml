@@ -24,6 +24,8 @@
         android:theme="@style/Theme.MusicMate">
 
         <receiver android:name=".ActionReceiver"/>
+        <service android:name=".KillNotificationService"/>
+
 
         <activity
             android:name=".playing"

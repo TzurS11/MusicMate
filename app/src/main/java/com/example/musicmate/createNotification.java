@@ -23,12 +23,19 @@ import java.net.URL;
 
 public class createNotification {
     public static final String CHANNEL_ID = "channel1";
+    public static final int NOTIFICATION_ID = 69420;
 
     public static final String ACTION_PREVIOUS = "actionprevious";
     public static final String ACTION_PLAY = "actionplay";
     public static final String ACTION_NEXT = "actionnext";
 
     public static Notification notification;
+
+    public static void destroyNotification(Context context) {
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+        notificationManagerCompat.cancel(NOTIFICATION_ID);
+        return;
+    }
 
     @SuppressLint("MissingPermission")
     public static void createNotification(Context context, Song song, int playbutton, int pos, int size) {
@@ -62,10 +69,11 @@ public class createNotification {
                         .setOnlyAlertOnce(true)
                         .setShowWhen(false)
                         .addAction(new NotificationCompat.Action(R.drawable.nextpassbackwards, "Previous", pendingIntentPrevious))
-                        .addAction(new NotificationCompat.Action(R.drawable.playfilled, "Play / Pause", pendingIntentPlayPause))
+                        .addAction(new NotificationCompat.Action(playbutton, "Play / Pause", pendingIntentPlayPause))
                         .addAction(new NotificationCompat.Action(R.drawable.nextpast, "Next", pendingIntentNext))
                         .setOngoing(true)
                         .setColorized(true)
+                        .setSilent(true)
                         .setColor(Color.rgb(255, 81, 0))
                         .setPriority(NotificationCompat.PRIORITY_LOW)
                         .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
@@ -74,7 +82,7 @@ public class createNotification {
                         .build();
 
 
-                notificationManagerCompat.notify(1, notification);
+                notificationManagerCompat.notify(NOTIFICATION_ID, notification);
 
 
             } catch (IOException e) {

@@ -54,11 +54,7 @@ public class playing extends AppCompatActivity implements View.OnClickListener {
         songDuration = findViewById(R.id.songDuration);
         controlPlayPause = findViewById(R.id.controlPlayPause);
         controlPlayPause.setOnClickListener(this);
-        if (MusicPlayer.player.isPlaying()) {
-            controlPlayPause.setImageResource(R.drawable.playfilled);
-        } else {
-            controlPlayPause.setImageResource(R.drawable.pausefilled);
-        }
+        controlPlayPause.setImageResource(R.drawable.pausefilled);
         controlNext = findViewById(R.id.controlNext);
         controlNext.setOnClickListener(this);
         controlPast = findViewById(R.id.controlPast);
@@ -151,7 +147,13 @@ public class playing extends AppCompatActivity implements View.OnClickListener {
         });
 
 
-    }
+        if (MusicPlayer.player.isPlaying()) {
+            controlPlayPause.setImageResource(R.drawable.playfilled);
+        } else {
+            controlPlayPause.setImageResource(R.drawable.pausefilled);
+        }
+
+    }// end of onCreate
 
     public static void changeDetailsFromMusicPlayer() {
         long duration = MusicPlayer.player.getDuration();

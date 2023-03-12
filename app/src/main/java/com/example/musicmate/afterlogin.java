@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LifecycleObserver;
 
 import com.example.musicmate.databinding.ActivityAfterloginBinding;
 import com.google.android.exoplayer2.Player;
@@ -40,9 +42,14 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
     Fragment settingsFrag = new SettingsFrag();
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
+        startService(new Intent(this, KillNotificationService.class));
+
 
         MusicPlayer.initiate(getApplicationContext());
 
