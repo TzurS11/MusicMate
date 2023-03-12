@@ -64,7 +64,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                 if (s.length() > 0) textInEditText[0] = true;
 
 
-                if (textInEditText[0] && textInEditText[1]) {
+                if (textInEditText[0] && textInEditText[1] && patternMatches(s.toString(), "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")) {
                     setButtonEnabled(loginBtn, true);
                 } else {
                     setButtonEnabled(loginBtn, false);
@@ -87,7 +87,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
                 if (s.length() >= 8) textInEditText[1] = true;
 
 
-                if (textInEditText[0] && textInEditText[1]) {
+                if (textInEditText[0] && textInEditText[1] && patternMatches(email.getText().toString(), "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")) {
                     setButtonEnabled(loginBtn, true);
                 } else {
                     setButtonEnabled(loginBtn, false);
@@ -100,6 +100,12 @@ public class login extends AppCompatActivity implements View.OnClickListener {
         });
 
 
+    }
+
+    public boolean patternMatches(String emailAddress, String regexPattern) {
+        return Pattern.compile(regexPattern)
+                .matcher(emailAddress)
+                .matches();
     }
 
     public void setButtonEnabled(Button btn, Boolean enable) {
@@ -118,7 +124,7 @@ public class login extends AppCompatActivity implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if (view == backBtn) {
-            Intent intent = new Intent(login.this,MainActivity.class);
+            Intent intent = new Intent(login.this, MainActivity.class);
             startActivity(intent);
             finish();
             return;

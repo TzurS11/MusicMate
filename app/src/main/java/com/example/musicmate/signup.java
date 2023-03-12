@@ -5,7 +5,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -25,6 +27,8 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.regex.Pattern;
 
 public class signup extends AppCompatActivity implements View.OnClickListener {
     EditText email, password;
@@ -68,7 +72,7 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
                 if (s.length() > 0) textInEditText[0] = true;
 
 
-                if (textInEditText[0] && textInEditText[1]) {
+                if (textInEditText[0] && textInEditText[1] && patternMatches(s.toString(), "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")) {
                     setButtonEnabled(signupBtn, true);
                 } else {
                     setButtonEnabled(signupBtn, false);
@@ -91,7 +95,7 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
                 if (s.length() >= 8) textInEditText[1] = true;
 
 
-                if (textInEditText[0] && textInEditText[1]) {
+                if (textInEditText[0] && textInEditText[1] && patternMatches(email.getText().toString(), "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")) {
                     setButtonEnabled(signupBtn, true);
                 } else {
                     setButtonEnabled(signupBtn, false);
@@ -131,51 +135,98 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
+    public boolean patternMatches(String emailAddress, String regexPattern) {
+        return Pattern.compile(regexPattern)
+                .matcher(emailAddress)
+                .matches();
+    }
+
     private void showDialog() {
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.submitsignup);
-        dialog.setCancelable(false);
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
+//        Dialog dialog = new Dialog(this);
+//        dialog.setContentView(R.layout.submitsignup);
+//        dialog.setCancelable(false);
+//        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//
+//
+//        Button submitSignup = dialog.findViewById(R.id.submitBtn);
+//        Button revertSignup = dialog.findViewById(R.id.revertBtn);
+//
+//
+//        revertSignup.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dialog.dismiss();
+//                return;
+//            }
+//        });
+//
+//        submitSignup.setOnClickListener(new View.OnClickListener() {
+//
+//
+//            @Override
+//            public void onClick(View view) {
+//                firebaseAuth.createUserWithEmailAndPassword(
+//                        email.getText().toString(),
+//                        password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if (task.isSuccessful()) {
+//                            dialog.dismiss();
+//                            Log.d("TAG", "createUserWithEmail:success");
+//                            Toast.makeText(signup.this, "Successfully registered", Toast.LENGTH_SHORT).show();
+//                            finish();
+//                            return;
+//                        } else {
+//                            Toast.makeText(signup.this, "Registration failed, please try again.", Toast.LENGTH_SHORT).show();
+//                            dialog.dismiss();
+//                            return;
+//                        }
+//                    }
+//                });
+//            }
+//        });
+//        dialog.show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle("Create account");
+        builder.setMessage("Are you sure?\nYou can't change email and password later");
+        builder.setPositiveButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-        Button submitSignup = dialog.findViewById(R.id.submitBtn);
-        Button revertSignup = dialog.findViewById(R.id.revertBtn);
+                        firebaseAuth.createUserWithEmailAndPassword(
+                                email.getText().toString(),
+                                password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    dialog.dismiss();
+                                    Toast.makeText(signup.this, "Successfully registered", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    return;
+                                } else {
+                                    Toast.makeText(signup.this, "Registration failed, please try again.", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                    return;
+                                }
+                            }
+                        });
+                    }
 
-
-        revertSignup.setOnClickListener(new View.OnClickListener() {
+                });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 return;
             }
         });
 
-        submitSignup.setOnClickListener(new View.OnClickListener() {
-
-
-            @Override
-            public void onClick(View view) {
-                firebaseAuth.createUserWithEmailAndPassword(
-                        email.getText().toString(),
-                        password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            dialog.dismiss();
-                            Log.d("TAG", "createUserWithEmail:success");
-                            Toast.makeText(signup.this, "Successfully registered", Toast.LENGTH_SHORT).show();
-                            finish();
-                            return;
-                        } else {
-                            Toast.makeText(signup.this, "Registration failed, please try again.", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                            return;
-                        }
-                    }
-                });
-            }
-        });
+        AlertDialog dialog = builder.create();
         dialog.show();
     }
+
 
 }
