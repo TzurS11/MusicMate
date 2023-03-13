@@ -38,7 +38,7 @@ public class createNotification {
     }
 
     @SuppressLint("MissingPermission")
-    public static void createNotification(Context context, Song song, int playbutton, int pos, int size) {
+    public static void createNotification(Context context, Song song, int playbutton, int pos, int size, Boolean playing) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
             MediaSessionCompat mediaSessionCompat = new MediaSessionCompat(context, "tag");
@@ -68,12 +68,13 @@ public class createNotification {
                         .setSmallIcon(IconCompat.createWithBitmap(appIconBitmap))
                         .setOnlyAlertOnce(true)
                         .setShowWhen(false)
-                        .setOngoing(true)
+                        .setOngoing(playing)
                         .setColorized(true)
                         .setSilent(true)
-                        .setColor(Color.rgb(255, 81, 0))
                         .setPriority(NotificationCompat.PRIORITY_LOW);
                 Integer available = 0;
+
+
                 if (MusicPlayer.recentlyPlayedSongs.size() > 0) {
                     available++;
                     notification.addAction(new NotificationCompat.Action(R.drawable.nextpassbackwards, "Previous", pendingIntentPrevious));
@@ -85,7 +86,7 @@ public class createNotification {
                     available++;
                 }
 
-                switch (available){
+                switch (available) {
                     case 1:
                         notification.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                                 .setShowActionsInCompactView(0)
@@ -107,7 +108,6 @@ public class createNotification {
                                 .setMediaSession(mediaSessionCompat.getSessionToken()));
                         break;
                 }
-
 
 
                 Notification builtNotification = notification.build();

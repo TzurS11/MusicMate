@@ -79,9 +79,9 @@ public class MusicPlayer extends AppCompatActivity {
             @Override
             public void onIsPlayingChanged(boolean isPlaying) {
                 if (player.isPlaying()) {
-                    createNotification.createNotification(applicationContext, currentSong, R.drawable.pausefilled, 1, queue.size());
+                    createNotification.createNotification(applicationContext, currentSong, R.drawable.pausefilled, 1, queue.size(),true);
                 } else {
-                    createNotification.createNotification(applicationContext, currentSong, R.drawable.playfilled, 1, queue.size());
+                    createNotification.createNotification(applicationContext, currentSong, R.drawable.playfilled, 1, queue.size(),false);
                 }
                 if (queue.size() == 0 && player.getPlaybackState() == Player.STATE_ENDED) {
                     createNotification.destroyNotification(applicationContext);

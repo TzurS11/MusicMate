@@ -29,9 +29,6 @@ public class SettingsFrag extends Fragment implements View.OnClickListener {
     private View mView;
     Button logout;
 
-    SeekBar similarity;
-    TextView similarityPer;
-
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -78,40 +75,7 @@ public class SettingsFrag extends Fragment implements View.OnClickListener {
         mView = inflater.inflate(R.layout.fragment_settings, container, false);
         logout = mView.findViewById(R.id.logoutBtn);
         logout.setOnClickListener(this);
-        similarity = mView.findViewById(R.id.similarity);
-        similarityPer = mView.findViewById(R.id.seekbarPer);
-        similarity.setProgress((int) (SearchFrag.similarityValue*100));
-        similarityPer.setX(getXpos(similarity));
-        similarityPer.setVisibility(View.INVISIBLE);
-        similarity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                int val = (progress * (seekBar.getWidth() - 2 * seekBar.getThumbOffset() - similarityPer.getWidth() / 2)) / seekBar.getMax();
-                similarityPer.setText(progress + "%");
-                similarityPer.setVisibility(View.VISIBLE);
-                similarityPer.setX(seekBar.getX() + val + seekBar.getThumbOffset() / 2);
-                similarityPer.setY(similarity.getY() + similarity.getHeight());
-                SearchFrag.similarityValue = Double.valueOf(similarity.getProgress()) / 100;
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         return mView;
-    }
-
-
-    private float getXpos(SeekBar seekBar){
-        int progress = seekBar.getProgress();
-        int val = (progress * (seekBar.getWidth() - 2 * seekBar.getThumbOffset() - similarityPer.getWidth() / 2)) / seekBar.getMax();
-        return seekBar.getX() + val + seekBar.getThumbOffset() / 2;
     }
 
     @Override

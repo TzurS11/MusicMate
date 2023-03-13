@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -41,6 +42,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -140,13 +142,12 @@ public class PlaylistsFrag extends Fragment implements View.OnClickListener {
     }
 
     public void showLongClickDialog(Playlist playlist) {
-
         playlistdialog.setContentView(R.layout.selectedplaylsit);
         playlistdialog.getWindow().setGravity(Gravity.BOTTOM);
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(playlistdialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.width = getResources().getDisplayMetrics().widthPixels;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.BOTTOM;
         playlistdialog.getWindow().setAttributes(lp);
@@ -173,7 +174,11 @@ public class PlaylistsFrag extends Fragment implements View.OnClickListener {
         editPlaylist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Intent intent = new Intent(requireActivity(), editPlaylist.class);
+                intent.putExtra("playlist", playlist);
                 playlistdialog.dismiss();
+                startActivity(intent);
             }
         });
 
@@ -203,8 +208,8 @@ public class PlaylistsFrag extends Fragment implements View.OnClickListener {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
                 builder.setCancelable(false);
-                builder.setTitle("Delete");
-                builder.setMessage("This action cannot be undone");
+                builder.setTitle("Delete Playlist (" + playlist.getName() + ")");
+                builder.setMessage("This action cannot be undone.");
                 builder.setPositiveButton("Confirm",
                         new DialogInterface.OnClickListener() {
                             @Override
@@ -215,6 +220,7 @@ public class PlaylistsFrag extends Fragment implements View.OnClickListener {
                                         .child(uid)
                                         .child(playlist.getPlaylistID());
                                 PlaylistRef.removeValue();
+                                FirebaseStorage.getInstance().getReference(playlist.getCoverImg()).delete();
                                 retriveData();
                                 dialog.dismiss();
                                 playlistdialog.dismiss();

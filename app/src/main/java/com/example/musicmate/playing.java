@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -37,6 +38,14 @@ public class playing extends AppCompatActivity implements View.OnClickListener {
     public static Boolean isHoldingSeekbar = false;
     private int toSeekTime = 0;
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Intent intent = new Intent(playing.this,afterlogin.class);
+        startActivity(intent);
+        return;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

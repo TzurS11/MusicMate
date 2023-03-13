@@ -86,22 +86,25 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
         goToPlayingActivity.setOnClickListener(this);
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createChannel();
+        createChannel();
+
+        if (MusicPlayer.player.getMediaItemCount() != 0) {
+            goToPlayingActivity.setVisibility(View.VISIBLE);
+
+        } else {
+            goToPlayingActivity.setVisibility(View.GONE);
         }
 
 
     }// end of onCreate
 
     public void createChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(createNotification.CHANNEL_ID,
-                    "playback notification", NotificationManager.IMPORTANCE_LOW);
+        NotificationChannel channel = new NotificationChannel(createNotification.CHANNEL_ID,
+                "playback notification", NotificationManager.IMPORTANCE_LOW);
 
-            notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            }
+        notificationManager = getSystemService(NotificationManager.class);
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(channel);
         }
     }
 
