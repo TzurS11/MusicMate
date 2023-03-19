@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -27,6 +29,12 @@ import com.google.android.exoplayer2.ui.PlayerNotificationManager;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class afterlogin extends AppCompatActivity implements View.OnClickListener {
 
@@ -42,7 +50,6 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
     Fragment searchFrag = new SearchFrag();
     public Fragment playlistsFrag = new PlaylistsFrag();
     Fragment settingsFrag = new SettingsFrag();
-
 
 
     @Override
@@ -95,6 +102,34 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
 
         } else {
             goToPlayingActivity.setVisibility(View.GONE);
+        }
+
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        Uri data = intent.getData();
+        if (data != null) {
+
+            String[] path = data.getPath().substring(1).split("/");
+
+            if (path[0] == "playlist") {
+                FirebaseDatabase.getInstance().getReference("Playlist").child(path[1]).child(path[2]).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Playlist playlist = snapshot.getValue(Playlist.class);
+                        Intent intent = new Intent(afterlogin.this, inPlaylist.class);
+                        intent.putExtra("playlist", playlist);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+//            if(data.getQueryParameter("type") == "song"){
+//
+//            }
         }
 
 
