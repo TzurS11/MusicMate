@@ -38,15 +38,6 @@ public class playing extends AppCompatActivity implements View.OnClickListener {
     public static Boolean isHoldingSeekbar = false;
     private int toSeekTime = 0;
 
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Intent intent = new Intent(playing.this,afterlogin.class);
-        startActivity(intent);
-        return;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,9 +148,9 @@ public class playing extends AppCompatActivity implements View.OnClickListener {
 
 
         if (MusicPlayer.player.isPlaying()) {
-            controlPlayPause.setImageResource(R.drawable.playfilled);
-        } else {
             controlPlayPause.setImageResource(R.drawable.pausefilled);
+        } else {
+            controlPlayPause.setImageResource(R.drawable.playfilled);
         }
 
     }// end of onCreate

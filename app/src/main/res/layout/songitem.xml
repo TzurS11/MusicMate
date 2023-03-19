@@ -5,61 +5,62 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/songimage"
-        android:layout_width="200px"
-        android:layout_height="200px"
-        android:scaleType="centerCrop"
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/songplaceholder" />
+        app:layout_constraintVertical_bias="0.0">
 
-    <TextView
-        android:id="@+id/songname"
-        android:layout_width="match_parent"
-        app:autoSizeTextType="uniform"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/amiko"
-        android:gravity="top"
-        android:autoSizeTextType="uniform"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:paddingBottom="20px"
-        android:text="Name"
-        android:paddingLeft="220px"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/songimage"
-        app:layout_constraintEnd_toEndOf="@+id/songartist"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/songartist"
-        app:layout_constraintTop_toTopOf="@+id/songimage"
-        app:layout_constraintVertical_bias="0.39" />
+        <ImageView
+            android:id="@+id/songimage"
+            android:layout_width="200px"
+            android:layout_height="200px"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/songplaceholder" />
 
-    <TextView
-        android:id="@+id/songartist"
-        android:layout_width="match_parent"
-        app:autoSizeTextType="uniform"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:fontFamily="@font/amiko"
-        android:gravity="bottom"
-        android:autoSizeTextType="uniform"
-        android:ellipsize="end"
-        android:paddingLeft="220px"
-        android:paddingTop="20px"
-        android:text="Author"
-        android:textColor="@color/white"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="@+id/songimage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.045"
-        app:layout_constraintStart_toEndOf="@+id/songimage"
-        app:layout_constraintTop_toTopOf="@+id/songimage"
-        app:layout_constraintVertical_bias="0.729" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/songname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/amiko"
+                    android:maxLines="1"
+                    android:gravity="bottom"
+                    android:paddingLeft="20px"
+                    android:text="Name"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    app:autoSizeTextType="uniform" />
+
+                <TextView
+                    android:gravity="top"
+                    android:id="@+id/songartist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/amiko"
+                    android:maxLines="1"
+                    android:paddingLeft="20px"
+                    android:text="Author"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    app:autoSizeTextType="uniform" />
+
+
+        </LinearLayout>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

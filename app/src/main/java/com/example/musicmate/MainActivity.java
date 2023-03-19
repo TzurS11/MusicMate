@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button login, signup;
     TextView welcome;
@@ -27,7 +29,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sp = getSharedPreferences("userInfo", MODE_PRIVATE);
-        if (sp.contains("userUid") && sp.contains("userEmail")) {
+
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             Intent intent = new Intent(MainActivity.this, afterlogin.class);
             startActivity(intent);
             finish();
@@ -50,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         signup = findViewById(R.id.signupBtn);
         signup.setOnClickListener(this);
-
 
 
     }

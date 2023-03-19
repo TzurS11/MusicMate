@@ -51,15 +51,15 @@ public class createNotification {
 
                 Intent intentPrevious = new Intent(context, ActionReceiver.class);
                 intentPrevious.putExtra("action", "previous");
-                PendingIntent pendingIntentPrevious = PendingIntent.getBroadcast(context, 1, intentPrevious, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent pendingIntentPrevious = PendingIntent.getBroadcast(context, 1, intentPrevious, PendingIntent.FLAG_IMMUTABLE);
 
                 Intent intentPlayPause = new Intent(context, ActionReceiver.class);
                 intentPlayPause.putExtra("action", "playPause");
-                PendingIntent pendingIntentPlayPause = PendingIntent.getBroadcast(context, 2, intentPlayPause, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent pendingIntentPlayPause = PendingIntent.getBroadcast(context, 2, intentPlayPause, PendingIntent.FLAG_IMMUTABLE);
 
                 Intent intentNext = new Intent(context, ActionReceiver.class);
                 intentNext.putExtra("action", "next");
-                PendingIntent pendingIntentNext = PendingIntent.getBroadcast(context, 3, intentNext, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent pendingIntentNext = PendingIntent.getBroadcast(context, 3, intentNext, PendingIntent.FLAG_IMMUTABLE);
 
                 notification = new NotificationCompat.Builder(context, CHANNEL_ID)
                         .setLargeIcon(icon)

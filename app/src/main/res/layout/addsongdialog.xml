@@ -33,86 +33,80 @@
         app:srcCompat="@drawable/opacitychange" />
 
 
-    <ListView
-        android:id="@+id/playlistSelect"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="1100px"
-        android:background="@drawable/list_border"
-        android:divider="#2A000000"
-        android:dividerHeight="3dp"
-        android:listSelector="@drawable/list_selector"
-        android:scrollbars="none"
-        android:stackFromBottom="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playSongButton"
-        app:layout_constraintVertical_bias="1.0"
-        tools:layout_conversion_absoluteHeight="548dp"
-        tools:layout_conversion_absoluteWidth="291dp">
-    </ListView>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/songNamePreview"
-        android:layout_width="match_parent"
-        android:layout_height="58dp"
-        android:autoSizeTextType="uniform"
-        android:ellipsize="end"
-        android:fontFamily="@font/amiko"
-        android:maxLines="1"
-        android:paddingLeft="20px"
-        android:paddingRight="20px"
-        android:shadowColor="@color/black"
-        android:shadowRadius="10"
-        android:shadowDx="2"
-        android:shadowDy="2"
-        android:gravity="bottom|left"
-        android:text="name placeholder"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/songArtistPreview"
-        android:layout_width="match_parent"
-        android:layout_height="58dp"
-        android:autoSizeTextType="uniform"
-        android:ellipsize="end"
-        android:fontFamily="@font/amiko"
-        android:gravity="top|left"
-        android:maxLines="1"
-        android:paddingLeft="20px"
-        android:paddingRight="20px"
-        android:shadowColor="@color/black"
-        android:shadowDx="2"
-        android:shadowDy="2"
-        android:shadowRadius="10"
-        android:text="author placeholder"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/songNamePreview"
-        app:layout_constraintVertical_bias="0.0" />
+            <TextView
+                android:id="@+id/songArtistPreview"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:autoSizeTextType="uniform"
+                android:ellipsize="end"
+                android:fontFamily="@font/amiko"
+                android:gravity="top|left"
+                android:maxLines="1"
+                android:paddingLeft="20px"
+                android:paddingRight="20px"
+                android:shadowColor="@color/black"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="10"
+                android:text="author"
+                android:textColor="@color/white" />
 
-    <ImageView
-        android:id="@+id/playSongButton"
-        android:layout_width="200px"
-        android:layout_height="200px"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/songArtistPreview"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/play"
-        app:tint="@color/primary" />
+            <TextView
+                android:id="@+id/songNamePreview"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:autoSizeTextType="uniform"
+                android:ellipsize="end"
+                android:fontFamily="@font/amiko"
+                android:gravity="bottom|left"
+                android:maxLines="1"
+                android:paddingLeft="20px"
+                android:paddingRight="20px"
+                android:shadowColor="@color/black"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="10"
+                android:text="name"
+                android:textColor="@color/white" />
+
+            <ImageView
+                android:id="@+id/playSongButton"
+                android:layout_width="200px"
+                android:layout_height="200px"
+                app:srcCompat="@drawable/play"
+                app:tint="@color/primary" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/playlistSelect"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/list_border"
+                android:divider="#2A000000"
+                android:dividerHeight="3dp"
+                android:listSelector="@drawable/list_selector"
+                android:scrollbars="none"
+                android:stackFromBottom="true"
+                tools:layout_conversion_absoluteHeight="548dp"
+                tools:layout_conversion_absoluteWidth="291dp" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -231,7 +231,6 @@ public class SearchFrag extends Fragment {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-                Toast.makeText(getActivity(), uploadsSongs.size() + "", Toast.LENGTH_SHORT).show();
                 adapter = new AllSongsAdapter(mView.getContext().getApplicationContext(), 1, uploadsSongs);
                 songs.setAdapter(adapter);
             }

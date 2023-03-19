@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +26,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.ui.PlayerNotificationManager;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class afterlogin extends AppCompatActivity implements View.OnClickListener {
 
@@ -97,6 +99,19 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
 
 
     }// end of onCreate
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (MusicPlayer.player.getMediaItemCount() != 0) {
+            afterlogin.goToPlayingActivity.setVisibility(View.VISIBLE);
+            if (playing.isCreated) {
+                playing.isHoldingSeekbar = false;
+            }
+        } else {
+            afterlogin.goToPlayingActivity.setVisibility(View.GONE);
+        }
+    }
 
     public void createChannel() {
         NotificationChannel channel = new NotificationChannel(createNotification.CHANNEL_ID,
