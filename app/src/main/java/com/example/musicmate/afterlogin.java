@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -152,8 +153,12 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
         NotificationChannel channel = new NotificationChannel(createNotification.CHANNEL_ID,
                 "playback notification", NotificationManager.IMPORTANCE_LOW);
 
+
+
         notificationManager = getSystemService(NotificationManager.class);
         if (notificationManager != null) {
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            channel.setImportance(NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(channel);
         }
     }

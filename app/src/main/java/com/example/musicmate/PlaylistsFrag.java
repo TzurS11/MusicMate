@@ -182,6 +182,20 @@ public class PlaylistsFrag extends Fragment implements View.OnClickListener {
             }
         });
 
+
+        LinearLayout sharePlaylist = playlistdialog.findViewById(R.id.sharePlaylistLayout);
+        sharePlaylist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.musicmate.com/playlist/" + playlist.getPlaylistID());
+                sendIntent.setType("text/plain");
+
+                Intent shareIntent = Intent.createChooser(sendIntent, null);
+                startActivity(shareIntent);
+            }
+        });
         LinearLayout deletePlaylist = playlistdialog.findViewById(R.id.deletePlaylistLayout);
         deletePlaylist.setOnTouchListener(new View.OnTouchListener() {
             @SuppressLint("ClickableViewAccessibility")

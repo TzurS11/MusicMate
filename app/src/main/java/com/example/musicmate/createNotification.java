@@ -2,7 +2,10 @@ package com.example.musicmate;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,8 +15,10 @@ import android.graphics.ColorSpace;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.IBinder;
 import android.support.v4.media.session.MediaSessionCompat;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
@@ -21,7 +26,7 @@ import androidx.core.graphics.drawable.IconCompat;
 import java.io.IOException;
 import java.net.URL;
 
-public class createNotification {
+public class createNotification extends Service {
     public static final String CHANNEL_ID = "channel1";
     public static final int NOTIFICATION_ID = 69420;
 
@@ -37,9 +42,12 @@ public class createNotification {
         return;
     }
 
+
     @SuppressLint("MissingPermission")
     public static void createNotification(Context context, Song song, int playbutton, int pos, int size, Boolean playing) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
             MediaSessionCompat mediaSessionCompat = new MediaSessionCompat(context, "tag");
             Bitmap icon = null;
@@ -68,10 +76,11 @@ public class createNotification {
                         .setSmallIcon(IconCompat.createWithBitmap(appIconBitmap))
                         .setOnlyAlertOnce(true)
                         .setShowWhen(false)
-                        .setOngoing(playing)
+                        .setOngoing(MusicPlayer.player.isPlaying())
                         .setColorized(true)
                         .setSilent(true)
-                        .setPriority(NotificationCompat.PRIORITY_LOW);
+                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH);
                 Integer available = 0;
 
 
@@ -118,5 +127,11 @@ public class createNotification {
                 System.out.println(e);
             }
         }
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 }

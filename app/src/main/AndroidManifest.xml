@@ -3,6 +3,7 @@
     package="com.example.musicmate">
 
     <uses-permission android:name="android.permission.BROADCAST_CLOSE_SYSTEM_DIALOGS" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
@@ -30,7 +31,8 @@
         <receiver android:name=".ActionReceiver" />
 
         <service android:name=".KillNotificationService" />
-
+        <service android:name=".MusicPlayer" />
+        <service android:name=".createNotification" />
         <activity
             android:name=".playing"
             android:exported="false"
@@ -53,6 +55,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="http" />
+                <data android:scheme="https" />
                 <data android:host="musicmate.com" />
             </intent-filter>
         </activity>

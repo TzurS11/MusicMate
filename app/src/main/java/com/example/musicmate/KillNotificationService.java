@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-public class KillNotificationService extends Service{
+import android.util.Log;
+
+public class KillNotificationService extends Service {
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
@@ -15,6 +17,7 @@ public class KillNotificationService extends Service{
         String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager nMgr = (NotificationManager) getSystemService(ns);
         nMgr.cancelAll();
+        Log.wtf("notification","deleted notification");
     }
 
     @Override

@@ -24,11 +24,41 @@
             android:background="#171717"
             android:orientation="vertical">
 
+
+            <LinearLayout
+                android:id="@+id/sharePlaylistLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/accent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/sharePlaylistIV"
+                    android:layout_width="180px"
+                    android:layout_height="180px"
+                    android:src="@drawable/share"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:id="@+id/sharePlaylistTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/amiko"
+                    android:text="Share playlist"
+                    android:textColor="@color/white"
+
+                    android:textSize="60px"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
             <LinearLayout
                 android:id="@+id/editPlaylistLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/accent"
+                android:layout_marginTop="10px"
                 android:orientation="horizontal">
 
                 <ImageView

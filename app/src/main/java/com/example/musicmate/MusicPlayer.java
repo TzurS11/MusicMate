@@ -3,7 +3,9 @@ package com.example.musicmate;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.ProgressDialog;
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -12,11 +14,13 @@ import android.media.MediaActionSound;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -52,7 +56,7 @@ import java.util.Objects;
 import java.util.Stack;
 
 
-public class MusicPlayer extends AppCompatActivity {
+public class MusicPlayer extends Service {
     public static ExoPlayer player;
     public static Song currentSong = null;
     public static ArrayList<Song> queue = null;
@@ -83,9 +87,9 @@ public class MusicPlayer extends AppCompatActivity {
                 } else {
                     createNotification.createNotification(applicationContext, currentSong, R.drawable.playfilled, 1, queue.size(),false);
                 }
-                if (queue.size() == 0 && player.getPlaybackState() == Player.STATE_ENDED) {
-                    createNotification.destroyNotification(applicationContext);
-                }
+//                if (queue.size() == 0 && player.getPlaybackState() == Player.STATE_ENDED) {
+//                    createNotification.destroyNotification(applicationContext);
+//                }
 
                 Player.Listener.super.onIsPlayingChanged(isPlaying);
                 if (player.getMediaItemCount() != 0) {
@@ -198,6 +202,12 @@ public class MusicPlayer extends AppCompatActivity {
 
     public static void playFromUrlFromQueue() throws ExtractionException, YoutubeRequestException, VideoIsUnavailable {
         new FetchStreamableUrlTask().execute();
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     private static class FetchStreamableUrlTask extends AsyncTask<String, Void, String> {

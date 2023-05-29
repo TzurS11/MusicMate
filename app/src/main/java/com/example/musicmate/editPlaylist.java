@@ -127,13 +127,13 @@ public class editPlaylist extends AppCompatActivity implements View.OnClickListe
         PlaylistRef.setValue(newPlaylist).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(editPlaylist.this, "Created playlist", Toast.LENGTH_SHORT).show();
+                Toast.makeText(editPlaylist.this, "Edited playlist", Toast.LENGTH_SHORT).show();
                 finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(editPlaylist.this, "Failed to create playlist", Toast.LENGTH_SHORT).show();
+                Toast.makeText(editPlaylist.this, "Failed to edit playlist", Toast.LENGTH_SHORT).show();
                 FirebaseStorage.getInstance().getReference("playlistCoverImg/" + playlist.getPlaylistID()).delete();
                 finish();
             }

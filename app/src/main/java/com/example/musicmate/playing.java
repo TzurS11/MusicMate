@@ -200,6 +200,16 @@ public class playing extends AppCompatActivity implements View.OnClickListener {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (MusicPlayer.player.isPlaying()) {
+            controlPlayPause.setImageResource(R.drawable.pausefilled);
+        } else {
+            controlPlayPause.setImageResource(R.drawable.playfilled);
+        }
+    }
+
+    @Override
     public void onClick(View view) {
         if (view == controlPlayPause) {
             if (MusicPlayer.player.isPlaying()) {
