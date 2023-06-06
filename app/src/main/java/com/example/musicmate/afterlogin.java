@@ -41,7 +41,7 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
 
     NotificationManager notificationManager;
 
-    ActionBar actionBar;
+
     ActivityAfterloginBinding binding;
     public static String currentScreen;
 
@@ -49,7 +49,7 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
 
 
     Fragment searchFrag = new SearchFrag();
-    public Fragment playlistsFrag = new PlaylistsFrag();
+    Fragment playlistsFrag = new PlaylistsFrag();
     Fragment settingsFrag = new SettingsFrag();
 
 
@@ -69,8 +69,7 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
         replaceFragment(new SearchFrag());
         currentScreen = "search";
 
-        actionBar = getSupportActionBar();
-        actionBar.hide();
+        getSupportActionBar().hide();
 
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -152,7 +151,6 @@ public class afterlogin extends AppCompatActivity implements View.OnClickListene
     public void createChannel() {
         NotificationChannel channel = new NotificationChannel(createNotification.CHANNEL_ID,
                 "playback notification", NotificationManager.IMPORTANCE_LOW);
-
 
 
         notificationManager = getSystemService(NotificationManager.class);

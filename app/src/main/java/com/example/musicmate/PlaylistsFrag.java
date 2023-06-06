@@ -60,12 +60,8 @@ public class PlaylistsFrag extends Fragment implements View.OnClickListener {
 
     ArrayList<Playlist> uploadsPlaylists;
     AllPlaylistsAdapter adapter;
-    Playlist playlist;
 
-    FirebaseDatabase firebaseDatabase;
     DatabaseReference PlaylistRef;
-
-    private ProgressDialog progressDialog;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

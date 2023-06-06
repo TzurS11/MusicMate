@@ -39,12 +39,11 @@ import java.util.UUID;
 
 public class createplaylist extends AppCompatActivity implements View.OnClickListener {
     ImageView coverImgPreview;
-    ActionBar actionBar;
     EditText name, author;
     Button coverImg, createPlaylist;
     Playlist playlist;
     FirebaseAuth firebaseAuth;
-    DatabaseReference UserRef, PlaylistRef;
+    DatabaseReference PlaylistRef;
     FirebaseDatabase firebaseDatabase;
 
     StorageReference storageReference;
@@ -54,8 +53,7 @@ public class createplaylist extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_createplaylist);
-        actionBar = getSupportActionBar();
-        actionBar.hide();
+        getSupportActionBar().hide();
 
         name = findViewById(R.id.nameEt);
         author = findViewById(R.id.authorEt);

@@ -21,7 +21,6 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button login, signup;
     TextView welcome;
-    ActionBar actionBar;
     SharedPreferences sp;
 
 
@@ -39,9 +38,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         setContentView(R.layout.activity_main);
 
-        actionBar = getSupportActionBar();
 
-        actionBar.hide();
+
+
+        getSupportActionBar().hide();
 
         welcome = findViewById(R.id.WelcomeTv);
         String first = "Welcome to ";

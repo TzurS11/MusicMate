@@ -47,6 +47,7 @@ import com.google.android.exoplayer2.ui.PlayerNotificationManager;
 import com.google.android.exoplayer2.upstream.DefaultAllocator;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -83,9 +84,9 @@ public class MusicPlayer extends Service {
             @Override
             public void onIsPlayingChanged(boolean isPlaying) {
                 if (player.isPlaying()) {
-                    createNotification.createNotification(applicationContext, currentSong, R.drawable.pausefilled, 1, queue.size(),true);
+                    createNotification.createNotification(applicationContext, currentSong, R.drawable.pausefilled, 1, queue.size(), true);
                 } else {
-                    createNotification.createNotification(applicationContext, currentSong, R.drawable.playfilled, 1, queue.size(),false);
+                    createNotification.createNotification(applicationContext, currentSong, R.drawable.playfilled, 1, queue.size(), false);
                 }
 //                if (queue.size() == 0 && player.getPlaybackState() == Player.STATE_ENDED) {
 //                    createNotification.destroyNotification(applicationContext);
@@ -194,9 +195,6 @@ public class MusicPlayer extends Service {
     }
 
     public static void shuffleQueue() {
-        player.getDuration();
-        player.addListener(new Player.Listener() {
-        });
         Collections.shuffle(queue);
     }
 
@@ -210,16 +208,40 @@ public class MusicPlayer extends Service {
         return null;
     }
 
+
+
     private static class FetchStreamableUrlTask extends AsyncTask<String, Void, String> {
+        protected boolean invalidUrl(String urlString) {
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("HEAD");
+                connection.connect();
+
+                // Check the HTTP response code
+
+                int responseCode = connection.getResponseCode();
+                Log.wtf("responseCode", String.valueOf(responseCode));
+                return (responseCode >= 400); // Returns true if there was an error (status code >= 400)
+            } catch (IOException e) {
+                // An exception occurred during the connection
+                e.printStackTrace();
+                return true; // Returns true if there was an error connecting to the URL
+            }
+        }
 
         protected String doInBackground(String... urls) {
+            Log.wtf("downloadurl", currentSong.getDownloadUrl());
             try {
-                // fetch the streamable url using YoutubeJExtractor
-                YoutubeJExtractor youtubeJExtractor = new YoutubeJExtractor();
-                VideoPlayerConfig videoData = youtubeJExtractor.extract(currentSong.getid());
-                String dashManifest = Objects.requireNonNull(videoData.getStreamingData()).getAdaptiveAudioStreams().get(0).getUrl();
-                currentSong.setDownloadUrl(dashManifest);
-                return dashManifest;
+                if (currentSong.getDownloadUrl() != null && invalidUrl(currentSong.getDownloadUrl()) == false) {
+                    return currentSong.getDownloadUrl();
+                } else {
+                    YoutubeJExtractor youtubeJExtractor = new YoutubeJExtractor();
+                    VideoPlayerConfig videoData = youtubeJExtractor.extract(currentSong.getid());
+                    String dashManifest = Objects.requireNonNull(videoData.getStreamingData()).getAdaptiveAudioStreams().get(0).getUrl();
+                    currentSong.setDownloadUrl(dashManifest);
+                    return dashManifest;
+                }
             } catch (Exception e) {
                 Log.e("FetchStreamableUrlTask", "Error fetching streamable URL", e);
                 return null;
@@ -229,9 +251,13 @@ public class MusicPlayer extends Service {
         protected void onPostExecute(String streamableUrl) {
             // update the UI with the streamable url
             if (streamableUrl != null) {
-                 
+
                 player.setMediaItem(MediaItem.fromUri(currentSong.getDownloadUrl()));
                 player.prepare();
+                if(!player.isPlaying()){
+                    player.play();
+                }
+                return;
 //        player.play();
 
             } else {

@@ -7,7 +7,7 @@ public class Song implements Serializable {
     private String name;
     private String artist;
     private String coverImg;
-    private String downloadUrl;
+    private String downloadUrl = null;
 
     public Song() {
     }

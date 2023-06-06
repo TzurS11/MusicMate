@@ -28,7 +28,6 @@ import com.squareup.picasso.Picasso;
 
 public class editPlaylist extends AppCompatActivity implements View.OnClickListener {
 
-    ActionBar actionBar;
     Playlist playlist;
     ImageView coverImgPreview;
     EditText name, author;
@@ -43,8 +42,7 @@ public class editPlaylist extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_playlist);
 
-        actionBar = getSupportActionBar();
-        actionBar.hide();
+        getSupportActionBar().hide();
 
         Intent intent = getIntent();
         coverImgPreview = findViewById(R.id.coverImgPreview);

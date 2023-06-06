@@ -29,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 
 public class playing extends AppCompatActivity implements View.OnClickListener {
 
-    ActionBar actionBar;
     private static ImageView coverImage;
     private static TextView songName, songArtist, songDuration;
     public static ImageView controlPlayPause, controlNext, controlPast;
@@ -43,8 +42,7 @@ public class playing extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playing);
 
-        actionBar = getSupportActionBar();
-        actionBar.hide();
+        getSupportActionBar().hide();
 
         coverImage = findViewById(R.id.coverImage);
         seekBar = findViewById(R.id.seekBar);

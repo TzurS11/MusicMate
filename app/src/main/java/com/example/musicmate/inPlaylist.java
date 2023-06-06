@@ -344,7 +344,7 @@ public class inPlaylist extends AppCompatActivity implements View.OnClickListene
                         song.setid(id);
                         song.setArtist(snippet.getString("channelTitle"));
                         song.setname(snippet.getString("title").trim());
-                        song.setDownloadUrl("https://www.youtube.com/watch?v=" + song.getid());
+                        song.setDownloadUrl(null);
                         song.setCoverImg(snippet.getJSONObject("thumbnails").getJSONObject("medium").getString("url"));
 
 

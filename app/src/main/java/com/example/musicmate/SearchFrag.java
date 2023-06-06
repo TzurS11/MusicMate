@@ -3,6 +3,7 @@ package com.example.musicmate;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -58,7 +59,6 @@ import rx.android.schedulers.AndroidSchedulers;
  * create an instance of this fragment.
  */
 public class SearchFrag extends Fragment {
-    public static Double similarityValue = 0.35;
     private View mView;
     EditText query;
 
@@ -68,10 +68,7 @@ public class SearchFrag extends Fragment {
     ArrayList<Song> uploadsSongs;
     AllSongsAdapter adapter;
     AllPlaylistsAdapter playlistsAdapter;
-    Song song;
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference SongRef;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -164,7 +161,7 @@ public class SearchFrag extends Fragment {
         });
 
         RxTextView.textChanges(query)
-                .debounce(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
+                .debounce(3, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(textChanged -> {
                     retriveData();
                 });
@@ -222,12 +219,8 @@ public class SearchFrag extends Fragment {
                             alreadyIn.add(song.getid());
                             uploadsSongs.add(song);
                         }
-
-
                     }
 
-
-//                    Toast.makeText(getActivity(), , Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -245,57 +238,6 @@ public class SearchFrag extends Fragment {
             RequestQueue requestQueue = Volley.newRequestQueue(requireActivity());
             requestQueue.add(jsonObjectRequest);
         }
-
-
-
-
-        //
-//        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-//        SongRef = FirebaseDatabase.getInstance().getReference("songs");
-////        Query querySeach = SongRef.orderByChild("name")
-////                .startAt(query.getText().toString().toUpperCase())
-////                .endAt(query.getText().toString().toLowerCase() + "\uf8ff");
-//        SongRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-////                Log.wtf("tag",String.valueOf(similarity("our painted sky", "our painted sky")));
-//
-//                if (adapter != null) adapter.clear();
-//                songs.setVisibility(View.VISIBLE);
-//
-//                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-//                    Song upload = postSnapshot.getValue(Song.class);
-//
-//                    if (query.getText().toString().trim().equals("")) {
-//                        if (uploadsSongs.size() < 20 && Math.round(Math.random() * 20) == 10) {
-//                            uploadsSongs.add(upload);
-//                        }
-//                    } else {
-////                        Log.wtf("tag", upload.getname().toLowerCase() + " + " + query.getText().toString().toLowerCase() + " = " + similarity(upload.getname().toLowerCase(), query.getText().toString().toLowerCase()));
-//                        Log.wtf("tag",similarityValue.toString());
-//                        if (similarity(upload.getname().toLowerCase().trim(), query.getText().toString().toLowerCase().trim()) >= similarityValue || similarity(upload.getArtist().toLowerCase().trim(), query.getText().toString().toLowerCase().trim()) >= similarityValue && !alreadyIn.contains(upload.getid())) {
-//                            uploadsSongs.add(upload);
-//                            alreadyIn.add(upload.getid());
-//                        }
-////                        String[] querySplit = query.getText().toString().split(" ");
-////                        for (int i = 0; i < querySplit.length; i++) {
-////                            if ((upload.getname().toLowerCase().contains(querySplit[i].toLowerCase()) || upload.getArtist().toLowerCase().contains(querySplit[i].toLowerCase())) && !alreadyIn.contains(upload.getid())) {
-////                                uploadsSongs.add(upload);
-////                                alreadyIn.add(upload.getid());
-////                            }
-////                        }
-//                    }
-//
-//                }
-//
-
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
     }
 
     public void showDialog(Song song) throws ExtractionException, YoutubeRequestException, VideoIsUnavailable {
@@ -370,20 +312,6 @@ public class SearchFrag extends Fragment {
         songArtistPreview.setText(song.getArtist());
         songArtistPreview.setSelected(true);
 
-//        if (song.getCoverImg() != null) {
-//            FirebaseStorage.getInstance().getReference(song.getCoverImg()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                @Override
-//                public void onSuccess(Uri uri) {
-//                    Picasso.get().load(uri).placeholder(R.drawable.songplaceholder).error(R.drawable.songplaceholder).into(songCoverPreview);
-//                }
-//            }).addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception e) {
-//                    songCoverPreview.setImageResource(R.drawable.songplaceholder);
-//                }
-//            });
-//        }
-
         if (song.getCoverImg() != null) {
             Picasso.get().load(song.getCoverImg()).placeholder(R.drawable.songplaceholder).error(R.drawable.songplaceholder).into(songCoverPreview);
         } else {
@@ -392,34 +320,6 @@ public class SearchFrag extends Fragment {
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().setAttributes(lp);
-
-//        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("videoUrls", Context.MODE_PRIVATE);
-//
-//        if (!sharedPreferences.contains(song.getid())) {
-//            YoutubeJExtractor youtubeJExtractor = new YoutubeJExtractor();
-//            VideoPlayerConfig videoData = youtubeJExtractor.extract(song.getid());
-//            String dashManifest = videoData.getStreamingData().getAdaptiveAudioStreams().get(0).getUrl();
-//            song.setDownloadUrl(dashManifest);
-//            SharedPreferences.Editor editor = sharedPreferences.edit();
-//            editor.putString(song.getid(), dashManifest);
-//            editor.commit();
-//        } else {
-//            String songLink = sharedPreferences.getString(song.getid(), null);
-//            Uri uri = Uri.parse(songLink);
-//            Integer expirationDate = Integer.valueOf(uri.getQueryParameter("expire"));
-//            Date d = new Date(expirationDate);
-//            if (d.before(Calendar.getInstance().getTime())) {
-//                YoutubeJExtractor youtubeJExtractor = new YoutubeJExtractor();
-//                VideoPlayerConfig videoData = youtubeJExtractor.extract(song.getid());
-//                String dashManifest = videoData.getStreamingData().getAdaptiveAudioStreams().get(0).getUrl();
-//                song.setDownloadUrl(dashManifest);
-//                SharedPreferences.Editor editor = sharedPreferences.edit();
-//                editor.putString(song.getid(), dashManifest);
-//                editor.commit();
-//            } else {
-//                song.setDownloadUrl(sharedPreferences.getString(song.getid(), null));
-//            }
-//        }
 
 
         ImageView playSong = dialog.findViewById(R.id.playSongButton);
@@ -445,78 +345,5 @@ public class SearchFrag extends Fragment {
     }
 
 
-    private static double similarity(String s1, String s2) {
-        String longer = s1, shorter = s2;
-        if (s1.length() < s2.length()) {
-            longer = s2;
-            shorter = s1;
-        }
-        int longerLength = longer.length();
-        if (longerLength == 0) {
-            return 1.0; /* both strings have zero length */
-        }
-        return (longerLength - getLevenshteinDistance(longer, shorter)) / (double) longerLength;
-    }
-
-
-    private static int getLevenshteinDistance(String s, String t) {
-        if (s == null || t == null) {
-            throw new IllegalArgumentException("Strings must not be null");
-        }
-
-        int n = s.length(); // length of s
-        int m = t.length(); // length of t
-
-        if (n == 0) {
-            return m;
-        } else if (m == 0) {
-            return n;
-        }
-
-        if (n > m) {
-            // swap the input strings to consume less memory
-            String tmp = s;
-            s = t;
-            t = tmp;
-            n = m;
-            m = t.length();
-        }
-
-        int p[] = new int[n + 1]; //'previous' cost array, horizontally
-        int d[] = new int[n + 1]; // cost array, horizontally
-        int _d[]; //placeholder to assist in swapping p and d
-
-        // indexes into strings s and t
-        int i; // iterates through s
-        int j; // iterates through t
-
-        char t_j; // jth character of t
-
-        int cost; // cost
-
-        for (i = 0; i <= n; i++) {
-            p[i] = i;
-        }
-
-        for (j = 1; j <= m; j++) {
-            t_j = t.charAt(j - 1);
-            d[0] = j;
-
-            for (i = 1; i <= n; i++) {
-                cost = s.charAt(i - 1) == t_j ? 0 : 1;
-                // minimum of cell to the left+1, to the top+1, diagonally left and up +cost
-                d[i] = Math.min(Math.min(d[i - 1] + 1, p[i] + 1), p[i - 1] + cost);
-            }
-
-            // copy current distance counts to 'previous row' distance counts
-            _d = p;
-            p = d;
-            d = _d;
-        }
-
-        // our last action in the above loop was to switch d and p, so p now
-        // actually has the most recent cost counts
-        return p[n];
-    }
 }
 

@@ -34,10 +34,7 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
     EditText email, password;
     Boolean[] textInEditText = {false, false};
     Button signupBtn, backBtn;
-    ActionBar actionBar;
     FirebaseAuth firebaseAuth;
-
-    FirebaseUser firebaseUser;
 
 
     @Override
@@ -45,9 +42,7 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        actionBar = getSupportActionBar();
-
-        actionBar.hide();
+        getSupportActionBar().hide();
 
         email = findViewById(R.id.emailAddress);
         password = findViewById(R.id.password);
@@ -59,7 +54,8 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
         backBtn.setOnClickListener(this);
 
 
-        firebaseAuth = firebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+
 
         email.addTextChangedListener(new TextWatcher() {
             @Override
@@ -143,50 +139,6 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
 
     private void showDialog() {
 
-//        Dialog dialog = new Dialog(this);
-//        dialog.setContentView(R.layout.submitsignup);
-//        dialog.setCancelable(false);
-//        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//
-//
-//        Button submitSignup = dialog.findViewById(R.id.submitBtn);
-//        Button revertSignup = dialog.findViewById(R.id.revertBtn);
-//
-//
-//        revertSignup.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                dialog.dismiss();
-//                return;
-//            }
-//        });
-//
-//        submitSignup.setOnClickListener(new View.OnClickListener() {
-//
-//
-//            @Override
-//            public void onClick(View view) {
-//                firebaseAuth.createUserWithEmailAndPassword(
-//                        email.getText().toString(),
-//                        password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-//                            dialog.dismiss();
-//                            Log.d("TAG", "createUserWithEmail:success");
-//                            Toast.makeText(signup.this, "Successfully registered", Toast.LENGTH_SHORT).show();
-//                            finish();
-//                            return;
-//                        } else {
-//                            Toast.makeText(signup.this, "Registration failed, please try again.", Toast.LENGTH_SHORT).show();
-//                            dialog.dismiss();
-//                            return;
-//                        }
-//                    }
-//                });
-//            }
-//        });
-//        dialog.show();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
         builder.setTitle("Create account");
