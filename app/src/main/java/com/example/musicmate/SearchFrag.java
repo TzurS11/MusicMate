@@ -193,7 +193,7 @@ public class SearchFrag extends Fragment {
 
         if (query.getText().toString().trim().equals("")) return;
 
-        String URL = "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=" + query.getText().toString() + "&type=video&key=AIzaSyDaey08lNnIvrWby7TaROcjJev3uj5OIXo";
+        String URL = "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=" + query.getText().toString() + "&type=video&key=APIKEY";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(URL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
